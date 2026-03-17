@@ -1,6 +1,6 @@
 # 🌬️ System Analityczno-Operacyjny „DAILY REPORT”
 
-> ### 🚀 [KLIKNIJ TUTAJ, ABY OTWORZYĆ INTERAKTYWNE DEMO RAPORTU](https://moczarskimateusz.github.io/wind-predictions-public/reports/nazwa_pliku.html)
+> ### 🚀 [KLIKNIJ TUTAJ, ABY OTWORZYĆ INTERAKTYWNE DEMO RAPORTU](https://moczarskimateusz.github.io/wind-predictions-public/reports/index.html)
 
 > _(Demo umożliwia symulację awarii turbin i przeliczanie strat finansowych w locie)_
 
