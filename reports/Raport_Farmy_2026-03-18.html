@@ -1,0 +1,1173 @@
+
+    <!DOCTYPE html>
+    <html lang="pl" data-bs-theme="dark">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>CYFROWY BLIŹNIAK FARMY OREB</title>
+        <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&family=Montserrat:wght@500;700&display=swap" rel="stylesheet">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+        <style>
+            :root { --bg-main: #0b0b0c; --bg-panel: #161617; --text-main: #d1d1d1; --border-panel: #2a2a2b; --orlen-red: #da291c; --neon-green: #00e676; }
+            body { background-color: var(--bg-main); font-family: 'Montserrat', sans-serif; color: var(--text-main); margin: 0; padding-bottom: 60px; font-size: 0.85rem; }
+            .scada-header { background-color: #000; border-bottom: 3px solid var(--orlen-red); padding: 12px 25px; box-shadow: 0 4px 10px rgba(0,0,0,0.5); position: sticky; top: 0; z-index: 100; }
+            .logo-text { font-size: 20px; font-weight: 700; color: #fff; letter-spacing: 1px; margin: 0; }
+            .logo-red { color: var(--orlen-red); }
+            .section-title { font-size: 12px; color: #777; text-transform: uppercase; letter-spacing: 1px; margin: 30px 0 15px 5px; font-weight: bold; }
+            .scada-panel { background-color: var(--bg-panel); border: 1px solid var(--border-panel); border-radius: 4px; padding: 20px; height: 100%; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+            .kpi-title { font-size: 10px; text-transform: uppercase; color: #777; letter-spacing: 1px; margin-bottom: 8px; font-weight: 700; }
+            .kpi-value { font-family: 'Roboto Mono', monospace; font-size: 22px; font-weight: 700; color: #fff; line-height: 1.1; }
+            .kpi-unit { font-size: 11px; color: #555; margin-left: 2px; }
+            .kpi-sub { font-size: 10px; color: #666; font-weight: bold; margin-top: 6px; }
+            .scada-table { font-family: 'Roboto Mono', monospace; font-size: 11px; }
+            
+            .form-check-input:checked { background-color: #da291c; border-color: #da291c; }
+            input[type=time]::-webkit-calendar-picker-indicator { filter: invert(1); }
+            
+            /* Stylizacja dynamicznej tabeli */
+            .dyn-table th { border-bottom: 2px solid #da291c !important; color: #aaa; font-weight: bold; font-size: 10px; }
+            .dyn-table td { border-bottom: 1px solid #2a2a2b; vertical-align: middle; }
+            
+            .btn-scada { background-color: #222; color: #ccc; border: 1px solid #444; font-size: 10px; font-weight: 700; text-transform: uppercase; padding: 5px 15px; text-decoration: none; display: inline-block; margin-bottom: 10px; }
+            .btn-scada:hover { background-color: var(--orlen-red); color: #fff; border-color: var(--orlen-red); }
+        </style>
+    </head>
+    <body>
+        <div class="scada-header d-flex justify-content-between align-items-center">
+            <div class="logo-text">ONP <span class="logo-red">WIND</span> <span style="font-weight: 400; color: #555;">| DIGITAL TWIN</span></div>
+            <div style="font-family: 'Roboto Mono', monospace; color: #555; font-size: 11px;">AKTUALIZACJA: <span style="color: var(--neon-green);">2026-03-17 17:47:04</span></div>
+        </div>
+
+        <div class="container-fluid px-4 pb-5">
+            
+            <div class="row mb-3 mt-4">
+                <div class="col-12">
+                    <div class="scada-panel p-3">
+                        <div class="section-title mt-0 mb-3" style="color:#ff9100;">⚙️ SYMULATOR AWARII / PLANOWYCH PRZESTOJÓW (WHAT-IF)</div>
+                        <div class="row">
+                            
+        <div class="col-md-2 col-sm-4 mb-3">
+            <div class="scada-panel p-2" style="background-color: #1a1a1b; border-top: 3px solid #ff9100; border-left: none; box-shadow: none;">
+                <strong style="color:#ff9100; font-size: 14px; letter-spacing: 1px;">T1</strong>
+                <div class="form-check form-switch mt-2">
+                    <input class="form-check-input out-all-day" type="checkbox" id="out_T1" data-turb="T1">
+                    <label class="form-check-label text-muted" style="font-size:11px;" for="out_T1">Awaria 24h</label>
+                </div>
+                <div class="mt-2">
+                    <div style="font-size:9px; color:#666; margin-bottom: 2px;">WYCIĘCIE CZASOWE:</div>
+                    <div class="d-flex align-items-center">
+                        <input type="time" id="start_T1" class="form-control form-control-sm bg-dark text-light border-secondary time-input" style="font-size:11px; padding: 2px 4px;">
+                        <span class="mx-1" style="font-size:11px;">-</span>
+                        <input type="time" id="end_T1" class="form-control form-control-sm bg-dark text-light border-secondary time-input" style="font-size:11px; padding: 2px 4px;">
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-2 col-sm-4 mb-3">
+            <div class="scada-panel p-2" style="background-color: #1a1a1b; border-top: 3px solid #ff9100; border-left: none; box-shadow: none;">
+                <strong style="color:#ff9100; font-size: 14px; letter-spacing: 1px;">T2</strong>
+                <div class="form-check form-switch mt-2">
+                    <input class="form-check-input out-all-day" type="checkbox" id="out_T2" data-turb="T2">
+                    <label class="form-check-label text-muted" style="font-size:11px;" for="out_T2">Awaria 24h</label>
+                </div>
+                <div class="mt-2">
+                    <div style="font-size:9px; color:#666; margin-bottom: 2px;">WYCIĘCIE CZASOWE:</div>
+                    <div class="d-flex align-items-center">
+                        <input type="time" id="start_T2" class="form-control form-control-sm bg-dark text-light border-secondary time-input" style="font-size:11px; padding: 2px 4px;">
+                        <span class="mx-1" style="font-size:11px;">-</span>
+                        <input type="time" id="end_T2" class="form-control form-control-sm bg-dark text-light border-secondary time-input" style="font-size:11px; padding: 2px 4px;">
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-3 mb-4">
+                <div class="col-md-2">
+                    <div class="scada-panel" style="border-top: 3px solid #009739;">
+                        <div class="kpi-title">Produkcja Netto</div>
+                        <div class="kpi-value" style="color: #00e676;"><span id="kpi-netto">0.60</span> <span class="kpi-unit">MWh</span></div>
+                        <div class="kpi-sub">DOBOWA ESTYMACJA</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="scada-panel" style="border-top: 3px solid #ecfdf5;">
+                        <div class="kpi-title">Szacowany Przychód (Po Symulacji)</div>
+                        <div class="kpi-value" style="color: #10b981;"><span id="kpi-zysk">242</span> <span class="kpi-unit">PLN</span></div>
+                        <div class="kpi-sub">STRATA NA AWARIACH: <span id="kpi-strata" style="color:#ff4d4d">0</span> PLN</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="scada-panel" style="background-color: #1a0f0f; border-top: 3px solid #da291c;">
+                        <div class="kpi-title" style="color: #ff4d4d;">Smart Curtailment</div>
+                        <div class="kpi-value" style="color: #da291c;">4 <span class="kpi-unit">H OFF</span></div>
+                        <div class="kpi-sub" style="color: #ff8080;">ZACHOWANY KAPITAŁ: +<span id="kpi-uratowany">3</span> PLN</div>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="scada-panel" style="border-top: 3px solid #ff9100;">
+                        <div class="kpi-title">Szczytowa Moc</div>
+                        <div class="kpi-value" style="color: #ff9100;"><span id="kpi-peak">22</span> <span class="kpi-unit">kW</span></div>
+                        <div class="kpi-sub">MAKSYMALNE OBCIĄŻENIE</div>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="scada-panel" style="border-top: 3px solid #007bff;">
+                        <div class="kpi-title">Prędkość Wiatru (80m)</div>
+                        <div class="kpi-value">1.7 <span class="kpi-unit">m/s</span></div>
+                        <div class="kpi-sub">MAX PODMUCHY: 4.3 m/s</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section-title">Profil Mocy i Ceny OREB (Dynamiczny)</div>
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="scada-panel p-2">
+                        <div>                        <script type="text/javascript">window.PlotlyConfig = {MathJaxConfig: 'local'};</script>
+        <script charset="utf-8" src="https://cdn.plot.ly/plotly-3.3.1.min.js" integrity="sha256-4rD3fugVb/nVJYUv5Ky3v+fYXoouHaBSP20WIJuEiWg=" crossorigin="anonymous"></script>                <div id="scada-plot" class="plotly-graph-div" style="height:100%; width:100%;"></div>            <script type="text/javascript">                window.PLOTLYENV=window.PLOTLYENV || {};                                if (document.getElementById("scada-plot")) {                    Plotly.newPlot(                        "scada-plot",                        [{"hoverinfo":"skip","line":{"width":0},"mode":"lines","showlegend":false,"x":["2026-03-18T00:00:00","2026-03-18T00:15:00","2026-03-18T00:30:00","2026-03-18T00:45:00","2026-03-18T01:00:00","2026-03-18T01:15:00","2026-03-18T01:30:00","2026-03-18T01:45:00","2026-03-18T02:00:00","2026-03-18T02:15:00","2026-03-18T02:30:00","2026-03-18T02:45:00","2026-03-18T03:00:00","2026-03-18T03:15:00","2026-03-18T03:30:00","2026-03-18T03:45:00","2026-03-18T04:00:00","2026-03-18T04:15:00","2026-03-18T04:30:00","2026-03-18T04:45:00","2026-03-18T05:00:00","2026-03-18T05:15:00","2026-03-18T05:30:00","2026-03-18T05:45:00","2026-03-18T06:00:00","2026-03-18T06:15:00","2026-03-18T06:30:00","2026-03-18T06:45:00","2026-03-18T07:00:00","2026-03-18T07:15:00","2026-03-18T07:30:00","2026-03-18T07:45:00","2026-03-18T08:00:00","2026-03-18T08:15:00","2026-03-18T08:30:00","2026-03-18T08:45:00","2026-03-18T09:00:00","2026-03-18T09:15:00","2026-03-18T09:30:00","2026-03-18T09:45:00","2026-03-18T10:00:00","2026-03-18T10:15:00","2026-03-18T10:30:00","2026-03-18T10:45:00","2026-03-18T11:00:00","2026-03-18T11:15:00","2026-03-18T11:30:00","2026-03-18T11:45:00","2026-03-18T12:00:00","2026-03-18T12:15:00","2026-03-18T12:30:00","2026-03-18T12:45:00","2026-03-18T13:00:00","2026-03-18T13:15:00","2026-03-18T13:30:00","2026-03-18T13:45:00","2026-03-18T14:00:00","2026-03-18T14:15:00","2026-03-18T14:30:00","2026-03-18T14:45:00","2026-03-18T15:00:00","2026-03-18T15:15:00","2026-03-18T15:30:00","2026-03-18T15:45:00","2026-03-18T16:00:00","2026-03-18T16:15:00","2026-03-18T16:30:00","2026-03-18T16:45:00","2026-03-18T17:00:00","2026-03-18T17:15:00","2026-03-18T17:30:00","2026-03-18T17:45:00","2026-03-18T18:00:00","2026-03-18T18:15:00","2026-03-18T18:30:00","2026-03-18T18:45:00","2026-03-18T19:00:00","2026-03-18T19:15:00","2026-03-18T19:30:00","2026-03-18T19:45:00","2026-03-18T20:00:00","2026-03-18T20:15:00","2026-03-18T20:30:00","2026-03-18T20:45:00","2026-03-18T21:00:00","2026-03-18T21:15:00","2026-03-18T21:30:00","2026-03-18T21:45:00","2026-03-18T22:00:00","2026-03-18T22:15:00","2026-03-18T22:30:00","2026-03-18T22:45:00","2026-03-18T23:00:00","2026-03-18T23:15:00","2026-03-18T23:30:00","2026-03-18T23:45:00"],"y":{"dtype":"f8","bdata":"LLKd76cGHUAssp3vpwYdQCyyne+nBh1AGi\u002fdJAZBGUBs5\u002fup8VIbQLx0kxgEVhxA8dJNYhAYG0CCwMqhRXYbQK1H4XoUrhpAoUW28\u002f0UGkCgGi\u002fdJMYeQKAaL90kxh5AoBov3STGHkCgGi\u002fdJMYeQKAaL90kxh5AoBov3STGHkCgGi\u002fdJMYeQKAaL90kxh5AoBov3STGHkCgGi\u002fdJMYeQBsv3SQGoSBAeekmMQjsG0AehetRuF4bQB6F61G4XhtAHoXrUbheG0AehetRuF4bQK1H4XoUrhpArUfhehSuGkCtR+F6FK4aQK1H4XoUrhpArUfhehSuGkCtR+F6FK4aQAwCK4cWmRdAT42XbhIDGECWbhKDwIoaQBKDwMqhxRpA+6nx0k2iGkCkcD0K12MVQEfhehSuhxlArBxaZDvfE0DC9ShcjwIUQHWTGARWzhlAZmZmZmbmHUD3U+Olm0QeQGZmZmZm5h1AQ4ts5\u002fspHUAwCKwcWmQZQPl+arx0kxlAGi\u002fdJAZBGUAYBFYOLfIdQDm0yHa+3xdAYzvfT40XF0ACK4cW2Q4YQAAAAAAAQBFAW4\u002fC9SjcEkAW2c73U2MRQKnx0k1i0BJAzMzMzMysIECKbOf7qbEfQI\u002fC9ShcjyBAbhKDwMoROECWbhKDwBo5QMZLN4lBAClAA1YOLbLdHkAssp3vpwYdQLXz\u002fdR4KRlAoBov3SQGGUBbj8L1KJwYQMDKoUW2sxhAW4\u002fC9SicGEC0yHa+nxoYQLTIdr6fGhhAtMh2vp8aGEA5tMh2vt8XQKnx0k1ikAhA5dAi2\u002fl+CkBBYOXQIhscQAisHFpkOxtAcD0K16NwHUBwPQrXo3AdQMqhRbbz\u002fR1AyqFFtvP9HUCd76fGS7cdQJ3vp8ZLtx1Ake18PzUeHUD3U+Olm0QeQC7dJAaBFR5ALt0kBoEVHkAu3SQGgRUeQA4tsp3vZx5ALLKd76cGHUAssp3vpwYdQCyyne+nBh1ALLKd76cGHUAaL90kBkEZQOOlm8QgcBlA"},"yaxis":"y","type":"scatter"},{"fill":"tonexty","fillcolor":"rgba(0, 230, 118, 0.1)","line":{"width":0},"mode":"lines","name":"Margines Błędu (±15%)","x":["2026-03-18T00:00:00","2026-03-18T00:15:00","2026-03-18T00:30:00","2026-03-18T00:45:00","2026-03-18T01:00:00","2026-03-18T01:15:00","2026-03-18T01:30:00","2026-03-18T01:45:00","2026-03-18T02:00:00","2026-03-18T02:15:00","2026-03-18T02:30:00","2026-03-18T02:45:00","2026-03-18T03:00:00","2026-03-18T03:15:00","2026-03-18T03:30:00","2026-03-18T03:45:00","2026-03-18T04:00:00","2026-03-18T04:15:00","2026-03-18T04:30:00","2026-03-18T04:45:00","2026-03-18T05:00:00","2026-03-18T05:15:00","2026-03-18T05:30:00","2026-03-18T05:45:00","2026-03-18T06:00:00","2026-03-18T06:15:00","2026-03-18T06:30:00","2026-03-18T06:45:00","2026-03-18T07:00:00","2026-03-18T07:15:00","2026-03-18T07:30:00","2026-03-18T07:45:00","2026-03-18T08:00:00","2026-03-18T08:15:00","2026-03-18T08:30:00","2026-03-18T08:45:00","2026-03-18T09:00:00","2026-03-18T09:15:00","2026-03-18T09:30:00","2026-03-18T09:45:00","2026-03-18T10:00:00","2026-03-18T10:15:00","2026-03-18T10:30:00","2026-03-18T10:45:00","2026-03-18T11:00:00","2026-03-18T11:15:00","2026-03-18T11:30:00","2026-03-18T11:45:00","2026-03-18T12:00:00","2026-03-18T12:15:00","2026-03-18T12:30:00","2026-03-18T12:45:00","2026-03-18T13:00:00","2026-03-18T13:15:00","2026-03-18T13:30:00","2026-03-18T13:45:00","2026-03-18T14:00:00","2026-03-18T14:15:00","2026-03-18T14:30:00","2026-03-18T14:45:00","2026-03-18T15:00:00","2026-03-18T15:15:00","2026-03-18T15:30:00","2026-03-18T15:45:00","2026-03-18T16:00:00","2026-03-18T16:15:00","2026-03-18T16:30:00","2026-03-18T16:45:00","2026-03-18T17:00:00","2026-03-18T17:15:00","2026-03-18T17:30:00","2026-03-18T17:45:00","2026-03-18T18:00:00","2026-03-18T18:15:00","2026-03-18T18:30:00","2026-03-18T18:45:00","2026-03-18T19:00:00","2026-03-18T19:15:00","2026-03-18T19:30:00","2026-03-18T19:45:00","2026-03-18T20:00:00","2026-03-18T20:15:00","2026-03-18T20:30:00","2026-03-18T20:45:00","2026-03-18T21:00:00","2026-03-18T21:15:00","2026-03-18T21:30:00","2026-03-18T21:45:00","2026-03-18T22:00:00","2026-03-18T22:15:00","2026-03-18T22:30:00","2026-03-18T22:45:00","2026-03-18T23:00:00","2026-03-18T23:15:00","2026-03-18T23:30:00","2026-03-18T23:45:00"],"y":{"dtype":"f8","bdata":"TWIQWDl0FUBNYhBYOXQVQE1iEFg5dBVA0SLb+X6qEkAZBFYOLTIUQIts5\u002fup8RRALbKd76cGFEA\u002fNV66SUwUQLgehetRuBNAukkMAitHE0Dm0CLb+b4WQObQItv5vhZA5tAi2\u002fm+FkDm0CLb+b4WQObQItv5vhZA5tAi2\u002fm+FkDm0CLb+b4WQObQItv5vhZA5tAi2\u002fm+FkDm0CLb+b4WQKJFtvP9lBhAF9nO91OjFEB7FK5H4ToUQHsUrkfhOhRAexSuR+E6FEB7FK5H4ToUQLgehetRuBNAuB6F61G4E0C4HoXrUbgTQLgehetRuBNAuB6F61G4E0C4HoXrUbgTQP7UeOkmcRFAcmiR7Xy\u002fEUCR7Xw\u002fNZ4TQH0\u002fNV66yRNAVg4tsp2vE0AfhetRuJ4PQB6F61G43hJAx0s3iUFgDUAUrkfhepQNQG3n+6nxEhNAmZmZmZkZFkCsHFpkO18WQJmZmZmZGRZAdJMYBFaOFUD3U+Olm8QSQIGVQ4ts5xJA0SLb+X6qEkD8qfHSTSIWQEw3iUFgpRFAxCCwcmgREUDVeOkmMcgRQAAAAAAAgAlA4HoUrkfhC0BNYhBYObQJQBxaZDvfzwtAZmZmZmamGECTGARWDm0XQHsUrkfhehhA7Xw\u002fNV7KMUCR7Xw\u002fNY4yQLTIdr6feiJAqvHSTWLQFkBNYhBYOXQVQAwCK4cWmRJA5tAi2\u002fl+EkBwPQrXozASQDVeukkMQhJAcD0K16MwEkA3iUFg5dARQDeJQWDl0BFAN4lBYOXQEUBMN4lBYKURQA4tsp3vJwJAL90kBoGVA0CgGi\u002fdJMYUQFTjpZvEIBRAw\u002fUoXI\u002fCFUDD9Shcj8IVQF66SQwCKxZAXrpJDAIrFkAQWDm0yPYVQBBYObTI9hVAEoPAyqGFFUCsHFpkO18WQCPb+X5qPBZAI9v5fmo8FkAj2\u002fl+ajwWQNNNYhBYeRZATWIQWDl0FUBNYhBYOXQVQE1iEFg5dBVATWIQWDl0FUDRItv5fqoSQFpkO99PzRJA"},"yaxis":"y","type":"scatter"},{"line":{"color":"#00e676","width":2},"mode":"lines","name":"Prognoza Bazowa (kWh)","x":["2026-03-18T00:00:00","2026-03-18T00:15:00","2026-03-18T00:30:00","2026-03-18T00:45:00","2026-03-18T01:00:00","2026-03-18T01:15:00","2026-03-18T01:30:00","2026-03-18T01:45:00","2026-03-18T02:00:00","2026-03-18T02:15:00","2026-03-18T02:30:00","2026-03-18T02:45:00","2026-03-18T03:00:00","2026-03-18T03:15:00","2026-03-18T03:30:00","2026-03-18T03:45:00","2026-03-18T04:00:00","2026-03-18T04:15:00","2026-03-18T04:30:00","2026-03-18T04:45:00","2026-03-18T05:00:00","2026-03-18T05:15:00","2026-03-18T05:30:00","2026-03-18T05:45:00","2026-03-18T06:00:00","2026-03-18T06:15:00","2026-03-18T06:30:00","2026-03-18T06:45:00","2026-03-18T07:00:00","2026-03-18T07:15:00","2026-03-18T07:30:00","2026-03-18T07:45:00","2026-03-18T08:00:00","2026-03-18T08:15:00","2026-03-18T08:30:00","2026-03-18T08:45:00","2026-03-18T09:00:00","2026-03-18T09:15:00","2026-03-18T09:30:00","2026-03-18T09:45:00","2026-03-18T10:00:00","2026-03-18T10:15:00","2026-03-18T10:30:00","2026-03-18T10:45:00","2026-03-18T11:00:00","2026-03-18T11:15:00","2026-03-18T11:30:00","2026-03-18T11:45:00","2026-03-18T12:00:00","2026-03-18T12:15:00","2026-03-18T12:30:00","2026-03-18T12:45:00","2026-03-18T13:00:00","2026-03-18T13:15:00","2026-03-18T13:30:00","2026-03-18T13:45:00","2026-03-18T14:00:00","2026-03-18T14:15:00","2026-03-18T14:30:00","2026-03-18T14:45:00","2026-03-18T15:00:00","2026-03-18T15:15:00","2026-03-18T15:30:00","2026-03-18T15:45:00","2026-03-18T16:00:00","2026-03-18T16:15:00","2026-03-18T16:30:00","2026-03-18T16:45:00","2026-03-18T17:00:00","2026-03-18T17:15:00","2026-03-18T17:30:00","2026-03-18T17:45:00","2026-03-18T18:00:00","2026-03-18T18:15:00","2026-03-18T18:30:00","2026-03-18T18:45:00","2026-03-18T19:00:00","2026-03-18T19:15:00","2026-03-18T19:30:00","2026-03-18T19:45:00","2026-03-18T20:00:00","2026-03-18T20:15:00","2026-03-18T20:30:00","2026-03-18T20:45:00","2026-03-18T21:00:00","2026-03-18T21:15:00","2026-03-18T21:30:00","2026-03-18T21:45:00","2026-03-18T22:00:00","2026-03-18T22:15:00","2026-03-18T22:30:00","2026-03-18T22:45:00","2026-03-18T23:00:00","2026-03-18T23:15:00","2026-03-18T23:30:00","2026-03-18T23:45:00"],"y":{"dtype":"f8","bdata":"PQrXo3A9GUA9CtejcD0ZQD0K16NwPRlA9ihcj8L1FUDD9Shcj8IXQKRwPQrXoxhAj8L1KFyPF0DhehSuR+EXQDMzMzMzMxdArkfhehSuFkDD9Shcj8IaQMP1KFyPwhpAw\u002fUoXI\u002fCGkDD9Shcj8IaQMP1KFyPwhpAw\u002fUoXI\u002fCGkDD9Shcj8IaQMP1KFyPwhpAw\u002fUoXI\u002fCGkDD9Shcj8IaQOxRuB6F6xxASOF6FK5HGEDNzMzMzMwXQM3MzMzMzBdAzczMzMzMF0DNzMzMzMwXQDMzMzMzMxdAMzMzMzMzF0AzMzMzMzMXQDMzMzMzMxdAMzMzMzMzF0AzMzMzMzMXQIXrUbgehRRA4XoUrkfhFEAUrkfhehQXQEjhehSuRxdAKVyPwvUoF0CamZmZmZkSQDMzMzMzMxZASOF6FK5HEUBmZmZmZmYRQHE9CtejcBZAAAAAAAAAGkBSuB6F61EaQAAAAAAAABpAXI\u002fC9ShcGUAUrkfhehQWQD0K16NwPRZA9ihcj8L1FUAK16NwPQoaQMP1KFyPwhRAFK5H4XoUFEDsUbgehesUQAAAAAAAAA5AZmZmZmZmEEA9CtejcD0OQFyPwvUoXBBAAAAAAAAAHUCPwvUoXI8bQM3MzMzMzBxArkfhehTuNEAUrkfhetQ1QD0K16NwvSVA16NwPQrXGkA9CtejcD0ZQOF6FK5H4RVAw\u002fUoXI\u002fCFUBmZmZmZmYVQHsUrkfhehVAZmZmZmZmFUD2KFyPwvUUQPYoXI\u002fC9RRA9ihcj8L1FEDD9Shcj8IUQFyPwvUoXAVACtejcD0KB0BxPQrXo3AYQK5H4XoUrhdAmpmZmZmZGUCamZmZmZkZQBSuR+F6FBpAFK5H4XoUGkDXo3A9CtcZQNejcD0K1xlAUrgehetRGUBSuB6F61EaQClcj8L1KBpAKVyPwvUoGkApXI\u002fC9SgaQHE9CtejcBpAPQrXo3A9GUA9CtejcD0ZQD0K16NwPRlAPQrXo3A9GUD2KFyPwvUVQB+F61G4HhZA"},"yaxis":"y","type":"scatter"},{"line":{"color":"#da291c","dash":"dot","width":2},"marker":{"color":"#ff4d4d","size":5,"symbol":"circle"},"mode":"lines+markers","name":"Cena RCE (PLN\u002fMWh)","x":["2026-03-18T00:00:00","2026-03-18T00:15:00","2026-03-18T00:30:00","2026-03-18T00:45:00","2026-03-18T01:00:00","2026-03-18T01:15:00","2026-03-18T01:30:00","2026-03-18T01:45:00","2026-03-18T02:00:00","2026-03-18T02:15:00","2026-03-18T02:30:00","2026-03-18T02:45:00","2026-03-18T03:00:00","2026-03-18T03:15:00","2026-03-18T03:30:00","2026-03-18T03:45:00","2026-03-18T04:00:00","2026-03-18T04:15:00","2026-03-18T04:30:00","2026-03-18T04:45:00","2026-03-18T05:00:00","2026-03-18T05:15:00","2026-03-18T05:30:00","2026-03-18T05:45:00","2026-03-18T06:00:00","2026-03-18T06:15:00","2026-03-18T06:30:00","2026-03-18T06:45:00","2026-03-18T07:00:00","2026-03-18T07:15:00","2026-03-18T07:30:00","2026-03-18T07:45:00","2026-03-18T08:00:00","2026-03-18T08:15:00","2026-03-18T08:30:00","2026-03-18T08:45:00","2026-03-18T09:00:00","2026-03-18T09:15:00","2026-03-18T09:30:00","2026-03-18T09:45:00","2026-03-18T10:00:00","2026-03-18T10:15:00","2026-03-18T10:30:00","2026-03-18T10:45:00","2026-03-18T11:00:00","2026-03-18T11:15:00","2026-03-18T11:30:00","2026-03-18T11:45:00","2026-03-18T12:00:00","2026-03-18T12:15:00","2026-03-18T12:30:00","2026-03-18T12:45:00","2026-03-18T13:00:00","2026-03-18T13:15:00","2026-03-18T13:30:00","2026-03-18T13:45:00","2026-03-18T14:00:00","2026-03-18T14:15:00","2026-03-18T14:30:00","2026-03-18T14:45:00","2026-03-18T15:00:00","2026-03-18T15:15:00","2026-03-18T15:30:00","2026-03-18T15:45:00","2026-03-18T16:00:00","2026-03-18T16:15:00","2026-03-18T16:30:00","2026-03-18T16:45:00","2026-03-18T17:00:00","2026-03-18T17:15:00","2026-03-18T17:30:00","2026-03-18T17:45:00","2026-03-18T18:00:00","2026-03-18T18:15:00","2026-03-18T18:30:00","2026-03-18T18:45:00","2026-03-18T19:00:00","2026-03-18T19:15:00","2026-03-18T19:30:00","2026-03-18T19:45:00","2026-03-18T20:00:00","2026-03-18T20:15:00","2026-03-18T20:30:00","2026-03-18T20:45:00","2026-03-18T21:00:00","2026-03-18T21:15:00","2026-03-18T21:30:00","2026-03-18T21:45:00","2026-03-18T22:00:00","2026-03-18T22:15:00","2026-03-18T22:30:00","2026-03-18T22:45:00","2026-03-18T23:00:00","2026-03-18T23:15:00","2026-03-18T23:30:00","2026-03-18T23:45:00"],"y":{"dtype":"f8","bdata":"uB6F61Hce0BmZmZmZhJ7QLgehetRFHtACtejcD3+ekAK16NwPfp6QGZmZmZmrnpASOF6FK53ekDD9Shcj3p6QI\u002fC9Shci3pAw\u002fUoXI+KekD2KFyPwol6QFyPwvUoiHpAuB6F61HMekCamZmZmbV6QHE9Ctej0HpAXI\u002fC9SjUekCkcD0K1+d6QLgehetRFHtApHA9Ctcje0DD9ShcjzJ7QOF6FK5HNX1AcT0K16N4fUCamZmZmb1+QOxRuB6FM4BAFK5H4XocgkBcj8L1KBaDQFyPwvUoaoNAmpmZmZmNg0DXo3A9CluDQDMzMzMzVYNAPQrXo3BxgkAK16NwPZyAQLgehetRzH9A9ihcj8JJfEApXI\u002fC9Zh5QI\u002fC9Shch3dA4XoUrkfZdEAAAAAAAGhwQAAAAAAASGpArkfhehReWUC4HoXrUbgMwM3MzMzMTCvAZmZmZmZWVcDXo3A9CjdWwArXo3A9CjXAw\u002fUoXI\u002fCQMDXo3A9CndDwBSuR+F6VETAhetRuB6lQsDsUbgehctFwClcj8L1yEHAw\u002fUoXI\u002fCLMCPwvUoXA8ywAAAAAAAACfAXI\u002fC9ShcHMD2KFyPwvXYvxSuR+F6FBVA16NwPQrXJ0CamZmZmVkwQM3MzMzMLENASOF6FK4PcEBcj8L1KAx0QD0K16NwKXlA4XoUrkelfEAfhetRuLp8QFK4HoXrFX5AcT0K16MugUD2KFyPwl+CQHE9CtejLoJAMzMzMzN\u002fhECPwvUoXAWGQD0K16NwmYdA7FG4HoWDiEBxPQrXo1aJQLgehetR3IlAPQrXo3DpiUCF61G4HnmJQClcj8L1iohA4XoUrke9h0DD9Shcj2KGQPYoXI\u002fCS4VA16NwPQqXhEAK16NwPQyEQClcj8L1voNA9ihcj8LhgkCF61G4Hn+CQAAAAAAA0oFAMzMzMzMlgUBxPQrXo5yBQHsUrkfhAoFA4XoUrkePgEBSuB6F6zmAQHE9CtejGIBAexSuR+EKf0CF61G4Htl+QEjhehSu+31A"},"yaxis":"y2","type":"scatter"}],                        {"template":{"data":{"barpolar":[{"marker":{"line":{"color":"rgb(17,17,17)","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"barpolar"}],"bar":[{"error_x":{"color":"#f2f5fa"},"error_y":{"color":"#f2f5fa"},"marker":{"line":{"color":"rgb(17,17,17)","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"bar"}],"carpet":[{"aaxis":{"endlinecolor":"#A2B1C6","gridcolor":"#506784","linecolor":"#506784","minorgridcolor":"#506784","startlinecolor":"#A2B1C6"},"baxis":{"endlinecolor":"#A2B1C6","gridcolor":"#506784","linecolor":"#506784","minorgridcolor":"#506784","startlinecolor":"#A2B1C6"},"type":"carpet"}],"choropleth":[{"colorbar":{"outlinewidth":0,"ticks":""},"type":"choropleth"}],"contourcarpet":[{"colorbar":{"outlinewidth":0,"ticks":""},"type":"contourcarpet"}],"contour":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"contour"}],"heatmap":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"heatmap"}],"histogram2dcontour":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"histogram2dcontour"}],"histogram2d":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"histogram2d"}],"histogram":[{"marker":{"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"histogram"}],"mesh3d":[{"colorbar":{"outlinewidth":0,"ticks":""},"type":"mesh3d"}],"parcoords":[{"line":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"parcoords"}],"pie":[{"automargin":true,"type":"pie"}],"scatter3d":[{"line":{"colorbar":{"outlinewidth":0,"ticks":""}},"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatter3d"}],"scattercarpet":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattercarpet"}],"scattergeo":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattergeo"}],"scattergl":[{"marker":{"line":{"color":"#283442"}},"type":"scattergl"}],"scattermapbox":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattermapbox"}],"scattermap":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattermap"}],"scatterpolargl":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatterpolargl"}],"scatterpolar":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatterpolar"}],"scatter":[{"marker":{"line":{"color":"#283442"}},"type":"scatter"}],"scatterternary":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatterternary"}],"surface":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"surface"}],"table":[{"cells":{"fill":{"color":"#506784"},"line":{"color":"rgb(17,17,17)"}},"header":{"fill":{"color":"#2a3f5f"},"line":{"color":"rgb(17,17,17)"}},"type":"table"}]},"layout":{"annotationdefaults":{"arrowcolor":"#f2f5fa","arrowhead":0,"arrowwidth":1},"autotypenumbers":"strict","coloraxis":{"colorbar":{"outlinewidth":0,"ticks":""}},"colorscale":{"diverging":[[0,"#8e0152"],[0.1,"#c51b7d"],[0.2,"#de77ae"],[0.3,"#f1b6da"],[0.4,"#fde0ef"],[0.5,"#f7f7f7"],[0.6,"#e6f5d0"],[0.7,"#b8e186"],[0.8,"#7fbc41"],[0.9,"#4d9221"],[1,"#276419"]],"sequential":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"sequentialminus":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]},"colorway":["#636efa","#EF553B","#00cc96","#ab63fa","#FFA15A","#19d3f3","#FF6692","#B6E880","#FF97FF","#FECB52"],"font":{"color":"#f2f5fa"},"geo":{"bgcolor":"rgb(17,17,17)","lakecolor":"rgb(17,17,17)","landcolor":"rgb(17,17,17)","showlakes":true,"showland":true,"subunitcolor":"#506784"},"hoverlabel":{"align":"left"},"hovermode":"closest","mapbox":{"style":"dark"},"paper_bgcolor":"rgb(17,17,17)","plot_bgcolor":"rgb(17,17,17)","polar":{"angularaxis":{"gridcolor":"#506784","linecolor":"#506784","ticks":""},"bgcolor":"rgb(17,17,17)","radialaxis":{"gridcolor":"#506784","linecolor":"#506784","ticks":""}},"scene":{"xaxis":{"backgroundcolor":"rgb(17,17,17)","gridcolor":"#506784","gridwidth":2,"linecolor":"#506784","showbackground":true,"ticks":"","zerolinecolor":"#C8D4E3"},"yaxis":{"backgroundcolor":"rgb(17,17,17)","gridcolor":"#506784","gridwidth":2,"linecolor":"#506784","showbackground":true,"ticks":"","zerolinecolor":"#C8D4E3"},"zaxis":{"backgroundcolor":"rgb(17,17,17)","gridcolor":"#506784","gridwidth":2,"linecolor":"#506784","showbackground":true,"ticks":"","zerolinecolor":"#C8D4E3"}},"shapedefaults":{"line":{"color":"#f2f5fa"}},"sliderdefaults":{"bgcolor":"#C8D4E3","bordercolor":"rgb(17,17,17)","borderwidth":1,"tickwidth":0},"ternary":{"aaxis":{"gridcolor":"#506784","linecolor":"#506784","ticks":""},"baxis":{"gridcolor":"#506784","linecolor":"#506784","ticks":""},"bgcolor":"rgb(17,17,17)","caxis":{"gridcolor":"#506784","linecolor":"#506784","ticks":""}},"title":{"x":0.05},"updatemenudefaults":{"bgcolor":"#506784","borderwidth":0},"xaxis":{"automargin":true,"gridcolor":"#283442","linecolor":"#506784","ticks":"","title":{"standoff":15},"zerolinecolor":"#283442","zerolinewidth":2},"yaxis":{"automargin":true,"gridcolor":"#283442","linecolor":"#506784","ticks":"","title":{"standoff":15},"zerolinecolor":"#283442","zerolinewidth":2}}},"shapes":[{"fillcolor":"rgba(218, 41, 28, 0.1)","layer":"below","line":{"width":0},"type":"rect","x0":0,"x1":1,"xref":"x domain","y0":-97.8625,"y1":0,"yref":"y2"},{"fillcolor":"rgba(13, 202, 240, 0.15)","layer":"below","line":{"color":"#0dcaf0","dash":"dash","width":1},"type":"rect","x0":"2026-03-18T10:00:00","x1":"2026-03-18T13:00:00","xref":"x","y0":0,"y1":1,"yref":"y domain"}],"annotations":[{"font":{"color":"#da291c"},"showarrow":false,"text":"Strefa Cen Ujemnych","x":1,"xanchor":"right","xref":"x domain","y":-97.8625,"yanchor":"bottom","yref":"y2"},{"font":{"color":"#0dcaf0"},"showarrow":false,"text":"REKOMENDOWANY SERWIS","x":"2026-03-18T10:00:00","xanchor":"left","xref":"x","y":1,"yanchor":"top","yref":"y domain"}],"margin":{"l":10,"r":10,"t":20,"b":10},"font":{"family":"'Roboto Mono', monospace","color":"#e0e0e0"},"yaxis":{"title":{"font":{"color":"#00e676"},"text":"Energia Generowana (kWh)"},"tickfont":{"color":"#00e676"},"gridcolor":"#2a2a2b","zerolinecolor":"#444"},"yaxis2":{"title":{"text":"Cena PSE RCE (PLN\u002fMWh)","font":{"color":"#da291c"}},"tickfont":{"color":"#da291c"},"anchor":"x","overlaying":"y","side":"right","gridcolor":"rgba(0,0,0,0)"},"xaxis":{"gridcolor":"#2a2a2b","zerolinecolor":"#444","tickformat":"%H:%M"},"legend":{"font":{"size":11,"color":"#aaa"},"orientation":"h","yanchor":"bottom","y":1.02,"xanchor":"right","x":1},"plot_bgcolor":"#161617","paper_bgcolor":"#161617","hovermode":"x unified"},                        {"displayModeBar": false, "responsive": true}                    )                };            </script>        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="section-title" style="color: #ff4d4d;">Wpływ Awarii na Generację (Tabela Dynamiczna)</div>
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="scada-panel">
+                        <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
+                            <table class="table table-dark table-hover scada-table dyn-table text-center">
+                                <thead style="position: sticky; top: 0; background-color: #161617; z-index: 10;">
+                                    <tr>
+                                        <th class="text-start">GODZINA</th>
+                                        <th>CENA RCE (PLN/MWh)</th>
+                                        <th>PRODUKCJA BAZA (kWh)</th>
+                                        <th>PRODUKCJA PO AWARII (kWh)</th>
+                                        <th style="color:#ff4d4d">UTRACONA ENERGIA (kWh)</th>
+                                        <th style="color:#ff4d4d">KOSZT FINANSOWY AWARII (PLN)</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="dynamic-table-body"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section-title">Archiwum Danych i Agregaty CSV</div>
+            <div class="row mb-5">
+                <div class="col-12">
+                    <div class="scada-panel">
+                        <div class="mb-3">
+                            <a href="data:text/csv;base64,Y3phcyxyY2VfcGxuLFByZWRrb3NjX1dpYXRydV9PTV84MG0sVDFfa1doLFQyX2tXaCxGYXJtYV9TdW1hX2tXaCxTdW1hX1V0cmFjb25hX1Nlcndpc19rV2gscHJlZHlrY2phX3N1bWEscG90ZW5jamFsbnlfenlzayxzdHJhdGFfc2Vyd2lzLHByZWRrb3NjX3dpYXRydSxwcmVkeWtjamFfdDEscHJlZHlrY2phX3QyLHN0cmF0YV9jdXJ0YWlsbWVudCxzdHJhdGFfYXdhcmlhDQoyMDI2LTAzLTE4IDAwOjAwOjAwLDQ0NS43NywxLjk5LDMuMTksMy4xMyw2LjMxLDAuMCw2LjMxLDIuODEyODA4Njk5OTk5OTk5NywwLjAsMS45OSwzLjE5LDMuMTMsMC4wLDAuMA0KMjAyNi0wMy0xOCAwMDoxNTowMCw0MzMuMTUsMi4yOCwzLjE5LDMuMTMsNi4zMSwwLjAsNi4zMSwyLjczMzE3NjUsMC4wLDIuMjgsMy4xOSwzLjEzLDAuMCwwLjANCjIwMjYtMDMtMTggMDA6MzA6MDAsNDMzLjI3LDIuNzcsMy4xOSwzLjEzLDYuMzEsMC4wLDYuMzEsMi43MzM5MzM2OTk5OTk5OTk3LDAuMCwyLjc3LDMuMTksMy4xMywwLjAsMC4wDQoyMDI2LTAzLTE4IDAwOjQ1OjAwLDQzMS44OSwzLjE2LDIuNzcsMi43MSw1LjQ5LDAuMCw1LjQ5LDIuMzcxMDc2MSwwLjAsMy4xNiwyLjc3LDIuNzEsMC4wLDAuMA0KMjAyNi0wMy0xOCAwMTowMDowMCw0MzEuNjQsMy40NCwzLjAsMi45NCw1Ljk0LDAuMCw1Ljk0LDIuNTYzOTQxNTk5OTk5OTk5NywwLjAsMy40NCwzLjAsMi45NCwwLjAsMC4wDQoyMDI2LTAzLTE4IDAxOjE1OjAwLDQyNi45LDMuNTEsMy4xMSwzLjA1LDYuMTYsMC4wLDYuMTYsMi42Mjk3MDQwMDAwMDAwMDAzLDAuMCwzLjUxLDMuMTEsMy4wNSwwLjAsMC4wDQoyMDI2LTAzLTE4IDAxOjMwOjAwLDQyMy40OCwzLjUsMi44NCwzLjA1LDUuODksMC4wLDUuODksMi40OTQyOTcxOTk5OTk5OTk3LDAuMCwzLjUsMi44NCwzLjA1LDAuMCwwLjANCjIwMjYtMDMtMTggMDE6NDU6MDAsNDIzLjY2LDMuNDEsMi45OSwyLjk5LDUuOTcsMC4wLDUuOTcsMi41MjkyNTAyLDAuMCwzLjQxLDIuOTksMi45OSwwLjAsMC4wDQoyMDI2LTAzLTE4IDAyOjAwOjAwLDQyNC43MSwzLjM0LDIuOSwyLjksNS44LDAuMCw1LjgsMi40NjMzMTc5OTk5OTk5OTk3LDAuMCwzLjM0LDIuOSwyLjksMC4wLDAuMA0KMjAyNi0wMy0xOCAwMjoxNTowMCw0MjQuNjYsMy4yLDIuODMsMi44Myw1LjY3LDAuMCw1LjY3LDIuNDA3ODIyMiwwLjAsMy4yLDIuODMsMi44MywwLjAsMC4wDQoyMDI2LTAzLTE4IDAyOjMwOjAwLDQyNC42MSwyLjk3LDMuMzQsMy4zNCw2LjY5LDAuMCw2LjY5LDIuODQwNjQwOTAwMDAwMDAwNCwwLjAsMi45NywzLjM0LDMuMzQsMC4wLDAuMA0KMjAyNi0wMy0xOCAwMjo0NTowMCw0MjQuNTEsMi44NiwzLjM0LDMuMzQsNi42OSwwLjAsNi42OSwyLjgzOTk3MTksMC4wLDIuODYsMy4zNCwzLjM0LDAuMCwwLjANCjIwMjYtMDMtMTggMDM6MDA6MDAsNDI4Ljc3LDIuNjksMy4zNCwzLjM0LDYuNjksMC4wLDYuNjksMi44Njg0NzEzLDAuMCwyLjY5LDMuMzQsMy4zNCwwLjAsMC4wDQoyMDI2LTAzLTE4IDAzOjE1OjAwLDQyNy4zNSwyLjU4LDMuMzQsMy4zNCw2LjY5LDAuMCw2LjY5LDIuODU4OTcxNTAwMDAwMDAwNCwwLjAsMi41OCwzLjM0LDMuMzQsMC4wLDAuMA0KMjAyNi0wMy0xOCAwMzozMDowMCw0MjkuMDQsMi40MiwzLjM0LDMuMzQsNi42OSwwLjAsNi42OSwyLjg3MDI3NzYwMDAwMDAwMDUsMC4wLDIuNDIsMy4zNCwzLjM0LDAuMCwwLjANCjIwMjYtMDMtMTggMDM6NDU6MDAsNDI5LjI2LDIuMiwzLjM0LDMuMzQsNi42OSwwLjAsNi42OSwyLjg3MTc0OTQsMC4wLDIuMiwzLjM0LDMuMzQsMC4wLDAuMA0KMjAyNi0wMy0xOCAwNDowMDowMCw0MzAuNDksMi4wNSwzLjM0LDMuMzQsNi42OSwwLjAsNi42OSwyLjg3OTk3ODEsMC4wLDIuMDUsMy4zNCwzLjM0LDAuMCwwLjANCjIwMjYtMDMtMTggMDQ6MTU6MDAsNDMzLjI3LDEuOTgsMy4zNCwzLjM0LDYuNjksMC4wLDYuNjksMi44OTg1NzYzLDAuMCwxLjk4LDMuMzQsMy4zNCwwLjAsMC4wDQoyMDI2LTAzLTE4IDA0OjMwOjAwLDQzNC4yNCwxLjk4LDMuMzQsMy4zNCw2LjY5LDAuMCw2LjY5LDIuOTA1MDY1NjAwMDAwMDAwNCwwLjAsMS45OCwzLjM0LDMuMzQsMC4wLDAuMA0KMjAyNi0wMy0xOCAwNDo0NTowMCw0MzUuMTYsMS45OCwzLjM0LDMuMzQsNi42OSwwLjAsNi42OSwyLjkxMTIyMDQwMDAwMDAwMDQsMC4wLDEuOTgsMy4zNCwzLjM0LDAuMCwwLjANCjIwMjYtMDMtMTggMDU6MDA6MDAsNDY3LjMzLDEuOTEsMy42MSwzLjYxLDcuMjMsMC4wLDcuMjMsMy4zNzg3OTU5LDAuMCwxLjkxLDMuNjEsMy42MSwwLjAsMC4wDQoyMDI2LTAzLTE4IDA1OjE1OjAwLDQ3MS41NCwxLjg0LDMuMDQsMy4wNCw2LjA3LDAuMCw2LjA3LDIuODYyMjQ3OCwwLjAsMS44NCwzLjA0LDMuMDQsMC4wLDAuMA0KMjAyNi0wMy0xOCAwNTozMDowMCw0OTEuODUsMS43OCwyLjk4LDIuOTgsNS45NSwwLjAsNS45NSwyLjkyNjUwNzUwMDAwMDAwMDUsMC4wLDEuNzgsMi45OCwyLjk4LDAuMCwwLjANCjIwMjYtMDMtMTggMDU6NDU6MDAsNTE4LjQ0LDEuNjQsMi45OCwyLjk4LDUuOTUsMC4wLDUuOTUsMy4wODQ3MTgwMDAwMDAwMDA1LDAuMCwxLjY0LDIuOTgsMi45OCwwLjAsMC4wDQoyMDI2LTAzLTE4IDA2OjAwOjAwLDU3OS41NiwxLjU4LDIuOTgsMi45OCw1Ljk1LDAuMCw1Ljk1LDMuNDQ4MzgyLDAuMCwxLjU4LDIuOTgsMi45OCwwLjAsMC4wDQoyMDI2LTAzLTE4IDA2OjE1OjAwLDYxMC43NywxLjQ0LDIuOTgsMi45OCw1Ljk1LDAuMCw1Ljk1LDMuNjM0MDgxNSwwLjAsMS40NCwyLjk4LDIuOTgsMC4wLDAuMA0KMjAyNi0wMy0xOCAwNjozMDowMCw2MjEuMjcsMS4zOSwyLjksMi45LDUuOCwwLjAsNS44LDMuNjAzMzY2LDAuMCwxLjM5LDIuOSwyLjksMC4wLDAuMA0KMjAyNi0wMy0xOCAwNjo0NTowMCw2MjUuNywxLjMsMi45LDIuOSw1LjgsMC4wLDUuOCwzLjYyOTA2LDAuMCwxLjMsMi45LDIuOSwwLjAsMC4wDQoyMDI2LTAzLTE4IDA3OjAwOjAwLDYxOS4zOCwxLjE3LDIuOSwyLjksNS44LDAuMCw1LjgsMy41OTI0MDM5OTk5OTk5OTk3LDAuMCwxLjE3LDIuOSwyLjksMC4wLDAuMA0KMjAyNi0wMy0xOCAwNzoxNTowMCw2MTguNjUsMS4wMywyLjksMi45LDUuOCwwLjAsNS44LDMuNTg4MTY5OTk5OTk5OTk5NCwwLjAsMS4wMywyLjksMi45LDAuMCwwLjANCjIwMjYtMDMtMTggMDc6MzA6MDAsNTkwLjE4LDAuOTQsMi45LDIuOSw1LjgsMC4wLDUuOCwzLjQyMzA0Mzk5OTk5OTk5OTUsMC4wLDAuOTQsMi45LDIuOSwwLjAsMC4wDQoyMDI2LTAzLTE4IDA3OjQ1OjAwLDUzMS41MywwLjgxLDIuOSwyLjksNS44LDAuMCw1LjgsMy4wODI4NzM5OTk5OTk5OTk0LDAuMCwwLjgxLDIuOSwyLjksMC4wLDAuMA0KMjAyNi0wMy0xOCAwODowMDowMCw1MDguNzcsMC43MiwyLjU3LDIuNTcsNS4xMywwLjAsNS4xMywyLjYwOTk5MDEsMC4wLDAuNzIsMi41NywyLjU3LDAuMCwwLjANCjIwMjYtMDMtMTggMDg6MTU6MDAsNDUyLjYxLDAuNjQsMi42MSwyLjYxLDUuMjIsMC4wLDUuMjIsMi4zNjI2MjQyLDAuMCwwLjY0LDIuNjEsMi42MSwwLjAsMC4wDQoyMDI2LTAzLTE4IDA4OjMwOjAwLDQwOS41NiwwLjU3LDIuODgsMi44OCw1Ljc3LDAuMCw1Ljc3LDIuMzYzMTYxMiwwLjAsMC41NywyLjg4LDIuODgsMC4wLDAuMA0KMjAyNi0wMy0xOCAwODo0NTowMCwzNzYuNDYsMC4zNiwyLjkxLDIuOTEsNS44MiwwLjAsNS44MiwyLjE5MDk5NzIsMC4wLDAuMzYsMi45MSwyLjkxLDAuMCwwLjANCjIwMjYtMDMtMTggMDk6MDA6MDAsMzMzLjU4LDAuMzIsMi44OSwyLjg5LDUuNzksMC4wLDUuNzksMS45MzE0MjgxOTk5OTk5OTk4LDAuMCwwLjMyLDIuODksMi44OSwwLjAsMC4wDQoyMDI2LTAzLTE4IDA5OjE1OjAwLDI2Mi41LDAuMiwyLjMzLDIuMzIsNC42NSwwLjAsNC42NSwxLjIyMDYyNSwwLjAsMC4yLDIuMzMsMi4zMiwwLjAsMC4wDQoyMDI2LTAzLTE4IDA5OjMwOjAwLDIxMC4yNSwwLjI4LDIuNzYsMi43OSw1LjU1LDAuMCw1LjU1LDEuMTY2ODg3NSwwLjAsMC4yOCwyLjc2LDIuNzksMC4wLDAuMA0KMjAyNi0wMy0xOCAwOTo0NTowMCwxMDEuNDcsMC4zMiwyLjAsMi4zMiw0LjMyLDAuMCw0LjMyLDAuNDM4MzUwNCwwLjAsMC4zMiwyLjAsMi4zMiwwLjAsMC4wDQoyMDI2LTAzLTE4IDEwOjAwOjAwLC0zLjU5LDAuNDEsMi4wMiwyLjM0LDQuMzUsMC4wLDQuMzUsLTAuMDE1NjE2NDk5OTk5OTk5OTk4LC0wLjAsMC40MSwyLjAyLDIuMzQsMC4wLDAuMA0KMjAyNi0wMy0xOCAxMDoxNTowMCwtMTMuNjUsMC40NSwyLjQ2LDMuMTUsNS42MSwwLjAsNS42MSwtMC4wNzY1NzY1LC0wLjAsMC40NSwyLjQ2LDMuMTUsMC4wLDAuMA0KMjAyNi0wMy0xOCAxMDozMDowMCwtODUuMzUsMC41LDIuODUsMy42NSw2LjUsMC4wLDYuNSwtMC41NTQ3NzQ5OTk5OTk5OTk5LC0wLjAsMC41LDIuODUsMy42NSwwLjAsMC4wDQoyMDI2LTAzLTE4IDEwOjQ1OjAwLC04OC44NiwwLjY0LDMuMjcsMy4zLDYuNTgsMC4wLDYuNTgsLTAuNTg0Njk4OCwtMC4wLDAuNjQsMy4yNywzLjMsMC4wLDAuMA0KMjAyNi0wMy0xOCAxMTowMDowMCwtMjEuMDQsMC42NywzLjI4LDMuMjIsNi41LDAuMCw2LjUsLTAuMTM2NzYsLTAuMCwwLjY3LDMuMjgsMy4yMiwwLjAsMC4wDQoyMDI2LTAzLTE4IDExOjE1OjAwLC0zMy41MiwwLjczLDMuMiwzLjE0LDYuMzQsMC4wLDYuMzQsLTAuMjEyNTE2ODAwMDAwMDAwMDMsLTAuMCwwLjczLDMuMiwzLjE0LDAuMCwwLjANCjIwMjYtMDMtMTggMTE6MzA6MDAsLTM4LjkzLDAuODEsMi43OSwyLjczLDUuNTIsMC4wLDUuNTIsLTAuMjE0ODkzNiwtMC4wLDAuODEsMi43OSwyLjczLDAuMCwwLjANCjIwMjYtMDMtMTggMTE6NDU6MDAsLTQwLjY2LDAuOCwyLjc5LDIuNzcsNS41NiwwLjAsNS41NiwtMC4yMjYwNjk1OTk5OTk5OTk5OCwtMC4wLDAuOCwyLjc5LDIuNzcsMC4wLDAuMA0KMjAyNi0wMy0xOCAxMjowMDowMCwtMzcuMjksMC44MiwyLjc0LDIuNzQsNS40OSwwLjAsNS40OSwtMC4yMDQ3MjIxLC0wLjAsMC44MiwyLjc0LDIuNzQsMC4wLDAuMA0KMjAyNi0wMy0xOCAxMjoxNTowMCwtNDMuNTksMC44MSwzLjI1LDMuMjUsNi41MSwwLjAsNi41MSwtMC4yODM3NzA5MDAwMDAwMDAwNSwtMC4wLDAuODEsMy4yNSwzLjI1LDAuMCwwLjANCjIwMjYtMDMtMTggMTI6MzA6MDAsLTM1LjU3LDAuOTIsMi41OSwyLjU5LDUuMTksMC4wLDUuMTksLTAuMTg0NjA4MywtMC4wLDAuOTIsMi41OSwyLjU5LDAuMCwwLjANCjIwMjYtMDMtMTggMTI6NDU6MDAsLTE0LjM4LDEuMDMsMi41MSwyLjUxLDUuMDIsMC4wLDUuMDIsLTAuMDcyMTg3NTk5OTk5OTk5OTksLTAuMCwxLjAzLDIuNTEsMi41MSwwLjAsMC4wDQoyMDI2LTAzLTE4IDEzOjAwOjAwLC0xOC4wNiwxLjE0LDIuNjIsMi42Miw1LjIzLDAuMCw1LjIzLC0wLjA5NDQ1MzgsLTAuMCwxLjE0LDIuNjIsMi42MiwwLjAsMC4wDQoyMDI2LTAzLTE4IDEzOjE1OjAwLC0xMS41LDEuMjIsMS44NywxLjg3LDMuNzUsMC4wLDMuNzUsLTAuMDQzMTI1LC0wLjAsMS4yMiwxLjg3LDEuODcsMC4wLDAuMA0KMjAyNi0wMy0xOCAxMzozMDowMCwtNy4wOSwxLjMsMi4wNSwyLjA1LDQuMSwwLjAsNC4xLC0wLjAyOTA2ODk5OTk5OTk5OTk5NCwtMC4wLDEuMywyLjA1LDIuMDUsMC4wLDAuMA0KMjAyNi0wMy0xOCAxMzo0NTowMCwtMC4zOSwxLjMyLDEuODksMS44OSwzLjc4LDAuMCwzLjc4LC0wLjAwMTQ3NDIsLTAuMCwxLjMyLDEuODksMS44OSwwLjAsMC4wDQoyMDI2LTAzLTE4IDE0OjAwOjAwLDUuMjcsMS4wMywyLjA1LDIuMDUsNC4wOSwwLjAsNC4wOSwwLjAyMTU1NDMsMC4wLDEuMDMsMi4wNSwyLjA1LDAuMCwwLjANCjIwMjYtMDMtMTggMTQ6MTU6MDAsMTEuOTIsMS4wLDMuNjMsMy42Myw3LjI1LDAuMCw3LjI1LDAuMDg2NDIwMDAwMDAwMDAwMDEsMC4wLDEuMCwzLjYzLDMuNjMsMC4wLDAuMA0KMjAyNi0wMy0xOCAxNDozMDowMCwxNi4zNSwyLjE2LDMuNDUsMy40NCw2Ljg5LDAuMCw2Ljg5LDAuMTEyNjUxNSwwLjAsMi4xNiwzLjQ1LDMuNDQsMC4wLDAuMA0KMjAyNi0wMy0xOCAxNDo0NTowMCwzOC4zNSwzLjM5LDMuNjEsMy41OSw3LjIsMC4wLDcuMiwwLjI3NjEyLDAuMCwzLjM5LDMuNjEsMy41OSwwLjAsMC4wDQoyMDI2LTAzLTE4IDE1OjAwOjAwLDI1Ni45OCw0LjI1LDEwLjQ3LDEwLjQ2LDIwLjkzLDAuMCwyMC45Myw1LjM3ODU5MTQsMC4wLDQuMjUsMTAuNDcsMTAuNDYsMC4wLDAuMA0KMjAyNi0wMy0xOCAxNToxNTowMCwzMjAuNzYsNC4zMywxMC44OCwxMC45NSwyMS44MywwLjAsMjEuODMsNy4wMDIxOTA3OTk5OTk5OTksMC4wLDQuMzMsMTAuODgsMTAuOTUsMC4wLDAuMA0KMjAyNi0wMy0xOCAxNTozMDowMCw0MDIuNTksMy45MSw1LjQsNS40NywxMC44NywwLjAsMTAuODcsNC4zNzYxNTMyOTk5OTk5OTk1LDAuMCwzLjkxLDUuNCw1LjQ3LDAuMCwwLjANCjIwMjYtMDMtMTggMTU6NDU6MDAsNDU4LjMzLDMuMzQsMy4zMiwzLjM5LDYuNzEsMC4wLDYuNzEsMy4wNzUzOTQyOTk5OTk5OTk3LDAuMCwzLjM0LDMuMzIsMy4zOSwwLjAsMC4wDQoyMDI2LTAzLTE4IDE2OjAwOjAwLDQ1OS42NywyLjkyLDIuOTMsMy4zOCw2LjMxLDAuMCw2LjMxLDIuOTAwNTE3NywwLjAsMi45MiwyLjkzLDMuMzgsMC4wLDAuMA0KMjAyNi0wMy0xOCAxNjoxNTowMCw0ODEuMzcsMi42NCwyLjc5LDIuNjcsNS40NywwLjAsNS40NywyLjYzMzA5MzksMC4wLDIuNjQsMi43OSwyLjY3LDAuMCwwLjANCjIwMjYtMDMtMTggMTY6MzA6MDAsNTQ5LjgzLDIuNSwyLjc4LDIuNjYsNS40NCwwLjAsNS40NCwyLjk5MTA3NTIwMDAwMDAwMDUsMC4wLDIuNSwyLjc4LDIuNjYsMC4wLDAuMA0KMjAyNi0wMy0xOCAxNjo0NTowMCw1ODcuOTcsMi4zNiwyLjc0LDIuNjEsNS4zNSwwLjAsNS4zNSwzLjE0NTYzOTUsMC4wLDIuMzYsMi43NCwyLjYxLDAuMCwwLjANCjIwMjYtMDMtMTggMTc6MDA6MDAsNTgxLjgzLDIuMjIsMi43NSwyLjYzLDUuMzcsMC4wLDUuMzcsMy4xMjQ0MjcxLDAuMCwyLjIyLDIuNzUsMi42MywwLjAsMC4wDQoyMDI2LTAzLTE4IDE3OjE1OjAwLDY1NS45LDIuMjIsMi43NCwyLjYyLDUuMzUsMC4wLDUuMzUsMy41MDkwNjQ5OTk5OTk5OTk3LDAuMCwyLjIyLDIuNzQsMi42MiwwLjAsMC4wDQoyMDI2LTAzLTE4IDE3OjMwOjAwLDcwNC42NywyLjMsMi42OCwyLjU2LDUuMjQsMC4wLDUuMjQsMy42OTI0NzA3OTk5OTk5OTk3LDAuMCwyLjMsMi42OCwyLjU2LDAuMCwwLjANCjIwMjYtMDMtMTggMTc6NDU6MDAsNzU1LjE4LDIuMzksMi42OCwyLjU2LDUuMjQsMC4wLDUuMjQsMy45NTcxNDMxOTk5OTk5OTk1LDAuMCwyLjM5LDIuNjgsMi41NiwwLjAsMC4wDQoyMDI2LTAzLTE4IDE4OjAwOjAwLDc4NC40NCwyLjMzLDIuNjgsMi41Niw1LjI0LDAuMCw1LjI0LDQuMTEwNDY1NiwwLjAsMi4zMywyLjY4LDIuNTYsMC4wLDAuMA0KMjAyNi0wMy0xOCAxODoxNTowMCw4MTAuODMsMi4xNSwyLjY1LDIuNTMsNS4xOSwwLjAsNS4xOSw0LjIwODIwNzcsMC4wLDIuMTUsMi42NSwyLjUzLDAuMCwwLjANCjIwMjYtMDMtMTggMTg6MzA6MDAsODI3LjU0LDEuOTIsMS4yOCwxLjM5LDIuNjcsMC4wLDIuNjcsMi4yMDk1MzE4LDAuMCwxLjkyLDEuMjgsMS4zOSwwLjAsMC4wDQoyMDI2LTAzLTE4IDE4OjQ1OjAwLDgyOS4xOCwxLjgyLDEuMzgsMS41LDIuODgsMC4wLDIuODgsMi4zODgwMzgzOTk5OTk5OTk3LDAuMCwxLjgyLDEuMzgsMS41LDAuMCwwLjANCjIwMjYtMDMtMTggMTk6MDA6MDAsODE1LjE0LDEuOCwzLjEsMy4wMiw2LjExLDAuMCw2LjExLDQuOTgwNTA1NCwwLjAsMS44LDMuMSwzLjAyLDAuMCwwLjANCjIwMjYtMDMtMTggMTk6MTU6MDAsNzg1LjM3LDEuNzUsMi42MSwzLjMxLDUuOTIsMC4wLDUuOTIsNC42NDkzOTA0LDAuMCwxLjc1LDIuNjEsMy4zMSwwLjAsMC4wDQoyMDI2LTAzLTE4IDE5OjMwOjAwLDc1OS42NiwxLjUyLDMuMSwzLjMxLDYuNCwwLjAsNi40LDQuODYxODI0LDAuMCwxLjUyLDMuMSwzLjMxLDAuMCwwLjANCjIwMjYtMDMtMTggMTk6NDU6MDAsNzE2LjMyLDEuMywzLjEsMy4zMSw2LjQsMC4wLDYuNCw0LjU4NDQ0ODAwMDAwMDAwMSwwLjAsMS4zLDMuMSwzLjMxLDAuMCwwLjANCjIwMjYtMDMtMTggMjA6MDA6MDAsNjgxLjQ3LDEuMTcsMy4zLDMuMjIsNi41MiwwLjAsNi41Miw0LjQ0MzE4NDQsMC4wLDEuMTcsMy4zLDMuMjIsMC4wLDAuMA0KMjAyNi0wMy0xOCAyMDoxNTowMCw2NTguODgsMS4wOCwzLjMsMy4yMiw2LjUyLDAuMCw2LjUyLDQuMjk1ODk3NiwwLjAsMS4wOCwzLjMsMy4yMiwwLjAsMC4wDQoyMDI2LTAzLTE4IDIwOjMwOjAwLDY0MS41MywxLjAzLDIuODgsMy41Nyw2LjQ2LDAuMCw2LjQ2LDQuMTQ0MjgzNzk5OTk5OTk5LDAuMCwxLjAzLDIuODgsMy41NywwLjAsMC4wDQoyMDI2LTAzLTE4IDIwOjQ1OjAwLDYzMS44NywxLjAzLDIuODgsMy41Nyw2LjQ2LDAuMCw2LjQ2LDQuMDgxODgwMiwwLjAsMS4wMywyLjg4LDMuNTcsMC4wLDAuMA0KMjAyNi0wMy0xOCAyMTowMDowMCw2MDQuMjIsMS4wLDIuNzYsMy41Nyw2LjMzLDAuMCw2LjMzLDMuODI0NzEyNiwwLjAsMS4wLDIuNzYsMy41NywwLjAsMC4wDQoyMDI2LTAzLTE4IDIxOjE1OjAwLDU5MS44OSwxLjA2LDMuMiwzLjM4LDYuNTgsMC4wLDYuNTgsMy44OTQ2MzYyLDAuMCwxLjA2LDMuMiwzLjM4LDAuMCwwLjANCjIwMjYtMDMtMTggMjE6MzA6MDAsNTcwLjI1LDEuMDYsMy4yNSwzLjI4LDYuNTQsMC4wLDYuNTQsMy43Mjk0MzUsMC4wLDEuMDYsMy4yNSwzLjI4LDAuMCwwLjANCjIwMjYtMDMtMTggMjE6NDU6MDAsNTQ4LjY1LDEuMTQsMy4yNSwzLjI4LDYuNTQsMC4wLDYuNTQsMy41ODgxNzA5OTk5OTk5OTk2LDAuMCwxLjE0LDMuMjUsMy4yOCwwLjAsMC4wDQoyMDI2LTAzLTE4IDIyOjAwOjAwLDU2My41OCwxLjIyLDMuMjUsMy4yOCw2LjU0LDAuMCw2LjU0LDMuNjg1ODEzMiwwLjAsMS4yMiwzLjI1LDMuMjgsMC4wLDAuMA0KMjAyNi0wMy0xOCAyMjoxNTowMCw1NDQuMzYsMS4zLDMuMzMsMy4yNyw2LjYxLDAuMCw2LjYxLDMuNTk4MjE5NiwwLjAsMS4zLDMuMzMsMy4yNywwLjAsMC4wDQoyMDI2LTAzLTE4IDIyOjMwOjAwLDUyOS45MSwxLjQzLDMuMTksMy4xMyw2LjMxLDAuMCw2LjMxLDMuMzQzNzMyMDk5OTk5OTk5NSwwLjAsMS40MywzLjE5LDMuMTMsMC4wLDAuMA0KMjAyNi0wMy0xOCAyMjo0NTowMCw1MTkuMjQsMS42MiwzLjE5LDMuMTMsNi4zMSwwLjAsNi4zMSwzLjI3NjQwNDM5OTk5OTk5OTcsMC4wLDEuNjIsMy4xOSwzLjEzLDAuMCwwLjANCjIwMjYtMDMtMTggMjM6MDA6MDAsNTE1LjA4LDEuNjgsMy4xOSwzLjEzLDYuMzEsMC4wLDYuMzEsMy4yNTAxNTQ4MDAwMDAwMDAyLDAuMCwxLjY4LDMuMTksMy4xMywwLjAsMC4wDQoyMDI2LTAzLTE4IDIzOjE1OjAwLDQ5Ni42OCwxLjc1LDMuMTksMy4xMyw2LjMxLDAuMCw2LjMxLDMuMTM0MDUwOCwwLjAsMS43NSwzLjE5LDMuMTMsMC4wLDAuMA0KMjAyNi0wMy0xOCAyMzozMDowMCw0OTMuNTcsMS44MSwyLjc3LDIuNzEsNS40OSwwLjAsNS40OSwyLjcwOTY5OTMsMC4wLDEuODEsMi43NywyLjcxLDAuMCwwLjANCjIwMjYtMDMtMTggMjM6NDU6MDAsNDc5LjczLDEuOSwyLjc3LDIuNzYsNS41MywwLjAsNS41MywyLjY1MjkwNjksMC4wLDEuOSwyLjc3LDIuNzYsMC4wLDAuMA0K" download="onp_wind_15min.csv" class="btn-scada">Pobierz RAW (15m)</a>
+                            <a href="data:text/csv;base64,Y3phcyxyY2VfcGxuLHByZWRrb3NjX3dpYXRydSxwcmVkeWtjamFfdDEscHJlZHlrY2phX3QyLHByZWR5a2NqYV9zdW1hLHBvdGVuY2phbG55X3p5c2ssc3RyYXRhX2N1cnRhaWxtZW50LHN0cmF0YV9zZXJ3aXMsc3RyYXRhX2F3YXJpYQ0KMjAyNi0wMy0xOCAwMDowMDowMCw0MzYuMDIsMi41NSwxMi4zNCwxMi4xLDI0LjQxOTk5OTk5OTk5OTk5OCwxMC42NTA5OTQ5OTk5OTk5OTgsMC4wLDAuMCwwLjANCjIwMjYtMDMtMTggMDE6MDA6MDAsNDI2LjQyLDMuNDY1LDExLjk0LDEyLjAzLDIzLjk2LDEwLjIxNzE5MywwLjAsMC4wLDAuMA0KMjAyNi0wMy0xOCAwMjowMDowMCw0MjQuNjIyNSwzLjA5MjUwMDAwMDAwMDAwMDIsMTIuNDEsMTIuNDEsMjQuODUsMTAuNTUxNzUzLDAuMCwwLjAsMC4wDQoyMDI2LTAzLTE4IDAzOjAwOjAwLDQyOC42MDUsMi40NzI1LDEzLjM2LDEzLjM2LDI2Ljc2LDExLjQ2OTQ2OTgsMC4wLDAuMCwwLjANCjIwMjYtMDMtMTggMDQ6MDA6MDAsNDMzLjI5LDEuOTk3NSwxMy4zNiwxMy4zNiwyNi43NiwxMS41OTQ4NDA0LDAuMCwwLjAsMC4wDQoyMDI2LTAzLTE4IDA1OjAwOjAwLDQ4Ny4yOSwxLjc5MjUsMTIuNjEsMTIuNjEsMjUuMjAwMDAwMDAwMDAwMDAzLDEyLjI1MjI2OTIsMC4wLDAuMCwwLjANCjIwMjYtMDMtMTggMDY6MDA6MDAsNjA5LjMyNSwxLjQyNzUsMTEuNzYsMTEuNzYsMjMuNSwxNC4zMTQ4ODk1LDAuMCwwLjAsMC4wDQoyMDI2LTAzLTE4IDA3OjAwOjAwLDU4OS45MzUsMC45ODc1LDExLjYsMTEuNiwyMy4yLDEzLjY4NjQ5MTk5OTk5OTk5OCwwLjAsMC4wLDAuMA0KMjAyNi0wMy0xOCAwODowMDowMCw0MzYuODUsMC41NzI1LDEwLjk3LDEwLjk3LDIxLjkzOTk5OTk5OTk5OTk5OCw5LjUyNjc3MjcsMC4wLDAuMCwwLjANCjIwMjYtMDMtMTggMDk6MDA6MDAsMjI2Ljk1LDAuMjgsOS45OCwxMC4zMiwyMC4zMTAwMDAwMDAwMDAwMDIsNC43NTcyOTExLDAuMCwwLjAsMC4wDQoyMDI2LTAzLTE4IDEwOjAwOjAwLC00Ny44NjI1LDAuNSwxMC42LDEyLjQ0MDAwMSwyMy4wNCwtMS4yMzE2NjY3OTk5OTk5OTk3LDAuMCwwLjAsMC4wDQoyMDI2LTAzLTE4IDExOjAwOjAwLC0zMy41Mzc1LDAuNzUyNTAwMDAwMDAwMDAwMSwxMi4wNTk5OTksMTEuODYwMDAxLDIzLjkxOTk5OTk5OTk5OTk5OCwtMC43OTAyNCwwLjAsMC4wLDAuMA0KMjAyNi0wMy0xOCAxMjowMDowMCwtMzIuNzA3NSwwLjg5NSwxMS4wOSwxMS4wOSwyMi4yMSwtMC43NDUyODg5LDAuMCwwLjAsMC4wDQoyMDI2LTAzLTE4IDEzOjAwOjAwLC05LjI2LDEuMjQ1LDguNDMsOC40MywxNi44NiwtMC4xNjgxMjIsMC4wLDAuMCwwLjANCjIwMjYtMDMtMTggMTQ6MDA6MDAsMTcuOTcyNSwxLjg5NSwxMi43NCwxMi43MSwyNS40MywwLjQ5Njc0NTgsMC4wLDAuMCwwLjANCjIwMjYtMDMtMTggMTU6MDA6MDAsMzU5LjY2NDk5OTk5OTk5OTk2LDMuOTU3NSwzMC4wNywzMC4yNyw2MC4zMzk5OTk5OTk5OTk5OTYsMTkuODMyMzI5OCwwLjAsMC4wLDAuMA0KMjAyNi0wMy0xOCAxNjowMDowMCw1MTkuNzEsMi42MDUsMTEuMjQsMTEuMzIsMjIuNTcsMTEuNjcwMzI2MzAwMDAwMDAxLDAuMCwwLjAsMC4wDQoyMDI2LTAzLTE4IDE3OjAwOjAwLDY3NC4zOTUsMi4yODI1LDEwLjg1LDEwLjM3LDIxLjIsMTQuMjgzMTA2MSwwLjAsMC4wLDAuMA0KMjAyNi0wMy0xOCAxODowMDowMCw4MTIuOTk3NSwyLjA1NSw3Ljk5MDAwMDIsNy45OCwxNS45OCwxMi45MTYyNDM1LDAuMCwwLjAsMC4wDQoyMDI2LTAzLTE4IDE5OjAwOjAwLDc2OS4xMjI1LDEuNTkyNSwxMS45MSwxMi45NSwyNC44MzAwMDAwMDAwMDAwMDIsMTkuMDc2MTY3OCwwLjAsMC4wLDAuMA0KMjAyNi0wMy0xOCAyMDowMDowMCw2NTMuNDM3NSwxLjA3NzUwMDAwMDAwMDAwMDEsMTIuMzYwMDAxLDEzLjU4LDI1Ljk2LDE2Ljk2NTI0NiwwLjAsMC4wLDAuMA0KMjAyNi0wMy0xOCAyMTowMDowMCw1NzguNzUyNSwxLjA2NSwxMi40NiwxMy41MSwyNS45OTAwMDAwMDAwMDAwMDIsMTUuMDM2OTU0OCwwLjAsMC4wLDAuMA0KMjAyNi0wMy0xOCAyMjowMDowMCw1MzkuMjcyNSwxLjM5MjUsMTIuOTYsMTIuODEsMjUuNzcsMTMuOTA0MTY5MywwLjAsMC4wLDAuMA0KMjAyNi0wMy0xOCAyMzowMDowMCw0OTYuMjY1LDEuNzg1LDExLjkyLDExLjczMDAwMDUsMjMuNjQsMTEuNzQ2ODExOCwwLjAsMC4wLDAuMA0K" download="onp_wind_hourly.csv" class="btn-scada">Pobierz Agregat (1h)</a>
+                            <a href="data:text/csv;base64,Y3phcyxyY2VfcGxuLHByZWRrb3NjX3dpYXRydSxwcmVkeWtjamFfdDEscHJlZHlrY2phX3QyLHByZWR5a2NqYV9zdW1hLHBvdGVuY2phbG55X3p5c2ssc3RyYXRhX2N1cnRhaWxtZW50LHN0cmF0YV9zZXJ3aXMsc3RyYXRhX2F3YXJpYQ0KMjAyNi0wMy0xOCw0MDguMjMwNDE2NjY2NjY2NywxLjczOTA2MjUsMjk3LjAxLDMwMS41Nyw1OTguNjQsMjQyLjAxNDc0OTE5OTk5OTk4LDAuMCwwLjAsMC4wDQo=" download="onp_wind_daily.csv" class="btn-scada">Pobierz Raport Dobowy</a>
+                        </div>
+                        <div class="table-responsive" style="max-height: 500px; overflow-y: auto;">
+                            <table border="1" class="dataframe table table-dark table-hover scada-table w-100 text-center" id="table15m">
+  <thead>
+    <tr style="text-align: center;">
+      <th>CZAS OPERACYJNY</th>
+      <th>CENA RCE (PLN/MWh)</th>
+      <th>PROGNOZA TOTAL (kWh)</th>
+      <th>ESTYMOWANY PRZYCHÓD (PLN)</th>
+      <th>PRĘDKOŚĆ WIATRU (m/s)</th>
+      <th>T1 (kWh)</th>
+      <th>T2 (kWh)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>00:00</td>
+      <td>445.77</td>
+      <td>6.31</td>
+      <td>2.81</td>
+      <td>1.99</td>
+      <td>3.19</td>
+      <td>3.13</td>
+    </tr>
+    <tr>
+      <td>00:15</td>
+      <td>433.15</td>
+      <td>6.31</td>
+      <td>2.73</td>
+      <td>2.28</td>
+      <td>3.19</td>
+      <td>3.13</td>
+    </tr>
+    <tr>
+      <td>00:30</td>
+      <td>433.27</td>
+      <td>6.31</td>
+      <td>2.73</td>
+      <td>2.77</td>
+      <td>3.19</td>
+      <td>3.13</td>
+    </tr>
+    <tr>
+      <td>00:45</td>
+      <td>431.89</td>
+      <td>5.49</td>
+      <td>2.37</td>
+      <td>3.16</td>
+      <td>2.77</td>
+      <td>2.71</td>
+    </tr>
+    <tr>
+      <td>01:00</td>
+      <td>431.64</td>
+      <td>5.94</td>
+      <td>2.56</td>
+      <td>3.44</td>
+      <td>3.00</td>
+      <td>2.94</td>
+    </tr>
+    <tr>
+      <td>01:15</td>
+      <td>426.90</td>
+      <td>6.16</td>
+      <td>2.63</td>
+      <td>3.51</td>
+      <td>3.11</td>
+      <td>3.05</td>
+    </tr>
+    <tr>
+      <td>01:30</td>
+      <td>423.48</td>
+      <td>5.89</td>
+      <td>2.49</td>
+      <td>3.50</td>
+      <td>2.84</td>
+      <td>3.05</td>
+    </tr>
+    <tr>
+      <td>01:45</td>
+      <td>423.66</td>
+      <td>5.97</td>
+      <td>2.53</td>
+      <td>3.41</td>
+      <td>2.99</td>
+      <td>2.99</td>
+    </tr>
+    <tr>
+      <td>02:00</td>
+      <td>424.71</td>
+      <td>5.80</td>
+      <td>2.46</td>
+      <td>3.34</td>
+      <td>2.90</td>
+      <td>2.90</td>
+    </tr>
+    <tr>
+      <td>02:15</td>
+      <td>424.66</td>
+      <td>5.67</td>
+      <td>2.41</td>
+      <td>3.20</td>
+      <td>2.83</td>
+      <td>2.83</td>
+    </tr>
+    <tr>
+      <td>02:30</td>
+      <td>424.61</td>
+      <td>6.69</td>
+      <td>2.84</td>
+      <td>2.97</td>
+      <td>3.34</td>
+      <td>3.34</td>
+    </tr>
+    <tr>
+      <td>02:45</td>
+      <td>424.51</td>
+      <td>6.69</td>
+      <td>2.84</td>
+      <td>2.86</td>
+      <td>3.34</td>
+      <td>3.34</td>
+    </tr>
+    <tr>
+      <td>03:00</td>
+      <td>428.77</td>
+      <td>6.69</td>
+      <td>2.87</td>
+      <td>2.69</td>
+      <td>3.34</td>
+      <td>3.34</td>
+    </tr>
+    <tr>
+      <td>03:15</td>
+      <td>427.35</td>
+      <td>6.69</td>
+      <td>2.86</td>
+      <td>2.58</td>
+      <td>3.34</td>
+      <td>3.34</td>
+    </tr>
+    <tr>
+      <td>03:30</td>
+      <td>429.04</td>
+      <td>6.69</td>
+      <td>2.87</td>
+      <td>2.42</td>
+      <td>3.34</td>
+      <td>3.34</td>
+    </tr>
+    <tr>
+      <td>03:45</td>
+      <td>429.26</td>
+      <td>6.69</td>
+      <td>2.87</td>
+      <td>2.20</td>
+      <td>3.34</td>
+      <td>3.34</td>
+    </tr>
+    <tr>
+      <td>04:00</td>
+      <td>430.49</td>
+      <td>6.69</td>
+      <td>2.88</td>
+      <td>2.05</td>
+      <td>3.34</td>
+      <td>3.34</td>
+    </tr>
+    <tr>
+      <td>04:15</td>
+      <td>433.27</td>
+      <td>6.69</td>
+      <td>2.90</td>
+      <td>1.98</td>
+      <td>3.34</td>
+      <td>3.34</td>
+    </tr>
+    <tr>
+      <td>04:30</td>
+      <td>434.24</td>
+      <td>6.69</td>
+      <td>2.91</td>
+      <td>1.98</td>
+      <td>3.34</td>
+      <td>3.34</td>
+    </tr>
+    <tr>
+      <td>04:45</td>
+      <td>435.16</td>
+      <td>6.69</td>
+      <td>2.91</td>
+      <td>1.98</td>
+      <td>3.34</td>
+      <td>3.34</td>
+    </tr>
+    <tr>
+      <td>05:00</td>
+      <td>467.33</td>
+      <td>7.23</td>
+      <td>3.38</td>
+      <td>1.91</td>
+      <td>3.61</td>
+      <td>3.61</td>
+    </tr>
+    <tr>
+      <td>05:15</td>
+      <td>471.54</td>
+      <td>6.07</td>
+      <td>2.86</td>
+      <td>1.84</td>
+      <td>3.04</td>
+      <td>3.04</td>
+    </tr>
+    <tr>
+      <td>05:30</td>
+      <td>491.85</td>
+      <td>5.95</td>
+      <td>2.93</td>
+      <td>1.78</td>
+      <td>2.98</td>
+      <td>2.98</td>
+    </tr>
+    <tr>
+      <td>05:45</td>
+      <td>518.44</td>
+      <td>5.95</td>
+      <td>3.08</td>
+      <td>1.64</td>
+      <td>2.98</td>
+      <td>2.98</td>
+    </tr>
+    <tr>
+      <td>06:00</td>
+      <td>579.56</td>
+      <td>5.95</td>
+      <td>3.45</td>
+      <td>1.58</td>
+      <td>2.98</td>
+      <td>2.98</td>
+    </tr>
+    <tr>
+      <td>06:15</td>
+      <td>610.77</td>
+      <td>5.95</td>
+      <td>3.63</td>
+      <td>1.44</td>
+      <td>2.98</td>
+      <td>2.98</td>
+    </tr>
+    <tr>
+      <td>06:30</td>
+      <td>621.27</td>
+      <td>5.80</td>
+      <td>3.60</td>
+      <td>1.39</td>
+      <td>2.90</td>
+      <td>2.90</td>
+    </tr>
+    <tr>
+      <td>06:45</td>
+      <td>625.70</td>
+      <td>5.80</td>
+      <td>3.63</td>
+      <td>1.30</td>
+      <td>2.90</td>
+      <td>2.90</td>
+    </tr>
+    <tr>
+      <td>07:00</td>
+      <td>619.38</td>
+      <td>5.80</td>
+      <td>3.59</td>
+      <td>1.17</td>
+      <td>2.90</td>
+      <td>2.90</td>
+    </tr>
+    <tr>
+      <td>07:15</td>
+      <td>618.65</td>
+      <td>5.80</td>
+      <td>3.59</td>
+      <td>1.03</td>
+      <td>2.90</td>
+      <td>2.90</td>
+    </tr>
+    <tr>
+      <td>07:30</td>
+      <td>590.18</td>
+      <td>5.80</td>
+      <td>3.42</td>
+      <td>0.94</td>
+      <td>2.90</td>
+      <td>2.90</td>
+    </tr>
+    <tr>
+      <td>07:45</td>
+      <td>531.53</td>
+      <td>5.80</td>
+      <td>3.08</td>
+      <td>0.81</td>
+      <td>2.90</td>
+      <td>2.90</td>
+    </tr>
+    <tr>
+      <td>08:00</td>
+      <td>508.77</td>
+      <td>5.13</td>
+      <td>2.61</td>
+      <td>0.72</td>
+      <td>2.57</td>
+      <td>2.57</td>
+    </tr>
+    <tr>
+      <td>08:15</td>
+      <td>452.61</td>
+      <td>5.22</td>
+      <td>2.36</td>
+      <td>0.64</td>
+      <td>2.61</td>
+      <td>2.61</td>
+    </tr>
+    <tr>
+      <td>08:30</td>
+      <td>409.56</td>
+      <td>5.77</td>
+      <td>2.36</td>
+      <td>0.57</td>
+      <td>2.88</td>
+      <td>2.88</td>
+    </tr>
+    <tr>
+      <td>08:45</td>
+      <td>376.46</td>
+      <td>5.82</td>
+      <td>2.19</td>
+      <td>0.36</td>
+      <td>2.91</td>
+      <td>2.91</td>
+    </tr>
+    <tr>
+      <td>09:00</td>
+      <td>333.58</td>
+      <td>5.79</td>
+      <td>1.93</td>
+      <td>0.32</td>
+      <td>2.89</td>
+      <td>2.89</td>
+    </tr>
+    <tr>
+      <td>09:15</td>
+      <td>262.50</td>
+      <td>4.65</td>
+      <td>1.22</td>
+      <td>0.20</td>
+      <td>2.33</td>
+      <td>2.32</td>
+    </tr>
+    <tr>
+      <td>09:30</td>
+      <td>210.25</td>
+      <td>5.55</td>
+      <td>1.17</td>
+      <td>0.28</td>
+      <td>2.76</td>
+      <td>2.79</td>
+    </tr>
+    <tr>
+      <td>09:45</td>
+      <td>101.47</td>
+      <td>4.32</td>
+      <td>0.44</td>
+      <td>0.32</td>
+      <td>2.00</td>
+      <td>2.32</td>
+    </tr>
+    <tr>
+      <td>10:00</td>
+      <td>-3.59</td>
+      <td>4.35</td>
+      <td>-0.02</td>
+      <td>0.41</td>
+      <td>2.02</td>
+      <td>2.34</td>
+    </tr>
+    <tr>
+      <td>10:15</td>
+      <td>-13.65</td>
+      <td>5.61</td>
+      <td>-0.08</td>
+      <td>0.45</td>
+      <td>2.46</td>
+      <td>3.15</td>
+    </tr>
+    <tr>
+      <td>10:30</td>
+      <td>-85.35</td>
+      <td>6.50</td>
+      <td>-0.55</td>
+      <td>0.50</td>
+      <td>2.85</td>
+      <td>3.65</td>
+    </tr>
+    <tr>
+      <td>10:45</td>
+      <td>-88.86</td>
+      <td>6.58</td>
+      <td>-0.58</td>
+      <td>0.64</td>
+      <td>3.27</td>
+      <td>3.30</td>
+    </tr>
+    <tr>
+      <td>11:00</td>
+      <td>-21.04</td>
+      <td>6.50</td>
+      <td>-0.14</td>
+      <td>0.67</td>
+      <td>3.28</td>
+      <td>3.22</td>
+    </tr>
+    <tr>
+      <td>11:15</td>
+      <td>-33.52</td>
+      <td>6.34</td>
+      <td>-0.21</td>
+      <td>0.73</td>
+      <td>3.20</td>
+      <td>3.14</td>
+    </tr>
+    <tr>
+      <td>11:30</td>
+      <td>-38.93</td>
+      <td>5.52</td>
+      <td>-0.21</td>
+      <td>0.81</td>
+      <td>2.79</td>
+      <td>2.73</td>
+    </tr>
+    <tr>
+      <td>11:45</td>
+      <td>-40.66</td>
+      <td>5.56</td>
+      <td>-0.23</td>
+      <td>0.80</td>
+      <td>2.79</td>
+      <td>2.77</td>
+    </tr>
+    <tr>
+      <td>12:00</td>
+      <td>-37.29</td>
+      <td>5.49</td>
+      <td>-0.20</td>
+      <td>0.82</td>
+      <td>2.74</td>
+      <td>2.74</td>
+    </tr>
+    <tr>
+      <td>12:15</td>
+      <td>-43.59</td>
+      <td>6.51</td>
+      <td>-0.28</td>
+      <td>0.81</td>
+      <td>3.25</td>
+      <td>3.25</td>
+    </tr>
+    <tr>
+      <td>12:30</td>
+      <td>-35.57</td>
+      <td>5.19</td>
+      <td>-0.18</td>
+      <td>0.92</td>
+      <td>2.59</td>
+      <td>2.59</td>
+    </tr>
+    <tr>
+      <td>12:45</td>
+      <td>-14.38</td>
+      <td>5.02</td>
+      <td>-0.07</td>
+      <td>1.03</td>
+      <td>2.51</td>
+      <td>2.51</td>
+    </tr>
+    <tr>
+      <td>13:00</td>
+      <td>-18.06</td>
+      <td>5.23</td>
+      <td>-0.09</td>
+      <td>1.14</td>
+      <td>2.62</td>
+      <td>2.62</td>
+    </tr>
+    <tr>
+      <td>13:15</td>
+      <td>-11.50</td>
+      <td>3.75</td>
+      <td>-0.04</td>
+      <td>1.22</td>
+      <td>1.87</td>
+      <td>1.87</td>
+    </tr>
+    <tr>
+      <td>13:30</td>
+      <td>-7.09</td>
+      <td>4.10</td>
+      <td>-0.03</td>
+      <td>1.30</td>
+      <td>2.05</td>
+      <td>2.05</td>
+    </tr>
+    <tr>
+      <td>13:45</td>
+      <td>-0.39</td>
+      <td>3.78</td>
+      <td>-0.00</td>
+      <td>1.32</td>
+      <td>1.89</td>
+      <td>1.89</td>
+    </tr>
+    <tr>
+      <td>14:00</td>
+      <td>5.27</td>
+      <td>4.09</td>
+      <td>0.02</td>
+      <td>1.03</td>
+      <td>2.05</td>
+      <td>2.05</td>
+    </tr>
+    <tr>
+      <td>14:15</td>
+      <td>11.92</td>
+      <td>7.25</td>
+      <td>0.09</td>
+      <td>1.00</td>
+      <td>3.63</td>
+      <td>3.63</td>
+    </tr>
+    <tr>
+      <td>14:30</td>
+      <td>16.35</td>
+      <td>6.89</td>
+      <td>0.11</td>
+      <td>2.16</td>
+      <td>3.45</td>
+      <td>3.44</td>
+    </tr>
+    <tr>
+      <td>14:45</td>
+      <td>38.35</td>
+      <td>7.20</td>
+      <td>0.28</td>
+      <td>3.39</td>
+      <td>3.61</td>
+      <td>3.59</td>
+    </tr>
+    <tr>
+      <td>15:00</td>
+      <td>256.98</td>
+      <td>20.93</td>
+      <td>5.38</td>
+      <td>4.25</td>
+      <td>10.47</td>
+      <td>10.46</td>
+    </tr>
+    <tr>
+      <td>15:15</td>
+      <td>320.76</td>
+      <td>21.83</td>
+      <td>7.00</td>
+      <td>4.33</td>
+      <td>10.88</td>
+      <td>10.95</td>
+    </tr>
+    <tr>
+      <td>15:30</td>
+      <td>402.59</td>
+      <td>10.87</td>
+      <td>4.38</td>
+      <td>3.91</td>
+      <td>5.40</td>
+      <td>5.47</td>
+    </tr>
+    <tr>
+      <td>15:45</td>
+      <td>458.33</td>
+      <td>6.71</td>
+      <td>3.08</td>
+      <td>3.34</td>
+      <td>3.32</td>
+      <td>3.39</td>
+    </tr>
+    <tr>
+      <td>16:00</td>
+      <td>459.67</td>
+      <td>6.31</td>
+      <td>2.90</td>
+      <td>2.92</td>
+      <td>2.93</td>
+      <td>3.38</td>
+    </tr>
+    <tr>
+      <td>16:15</td>
+      <td>481.37</td>
+      <td>5.47</td>
+      <td>2.63</td>
+      <td>2.64</td>
+      <td>2.79</td>
+      <td>2.67</td>
+    </tr>
+    <tr>
+      <td>16:30</td>
+      <td>549.83</td>
+      <td>5.44</td>
+      <td>2.99</td>
+      <td>2.50</td>
+      <td>2.78</td>
+      <td>2.66</td>
+    </tr>
+    <tr>
+      <td>16:45</td>
+      <td>587.97</td>
+      <td>5.35</td>
+      <td>3.15</td>
+      <td>2.36</td>
+      <td>2.74</td>
+      <td>2.61</td>
+    </tr>
+    <tr>
+      <td>17:00</td>
+      <td>581.83</td>
+      <td>5.37</td>
+      <td>3.12</td>
+      <td>2.22</td>
+      <td>2.75</td>
+      <td>2.63</td>
+    </tr>
+    <tr>
+      <td>17:15</td>
+      <td>655.90</td>
+      <td>5.35</td>
+      <td>3.51</td>
+      <td>2.22</td>
+      <td>2.74</td>
+      <td>2.62</td>
+    </tr>
+    <tr>
+      <td>17:30</td>
+      <td>704.67</td>
+      <td>5.24</td>
+      <td>3.69</td>
+      <td>2.30</td>
+      <td>2.68</td>
+      <td>2.56</td>
+    </tr>
+    <tr>
+      <td>17:45</td>
+      <td>755.18</td>
+      <td>5.24</td>
+      <td>3.96</td>
+      <td>2.39</td>
+      <td>2.68</td>
+      <td>2.56</td>
+    </tr>
+    <tr>
+      <td>18:00</td>
+      <td>784.44</td>
+      <td>5.24</td>
+      <td>4.11</td>
+      <td>2.33</td>
+      <td>2.68</td>
+      <td>2.56</td>
+    </tr>
+    <tr>
+      <td>18:15</td>
+      <td>810.83</td>
+      <td>5.19</td>
+      <td>4.21</td>
+      <td>2.15</td>
+      <td>2.65</td>
+      <td>2.53</td>
+    </tr>
+    <tr>
+      <td>18:30</td>
+      <td>827.54</td>
+      <td>2.67</td>
+      <td>2.21</td>
+      <td>1.92</td>
+      <td>1.28</td>
+      <td>1.39</td>
+    </tr>
+    <tr>
+      <td>18:45</td>
+      <td>829.18</td>
+      <td>2.88</td>
+      <td>2.39</td>
+      <td>1.82</td>
+      <td>1.38</td>
+      <td>1.50</td>
+    </tr>
+    <tr>
+      <td>19:00</td>
+      <td>815.14</td>
+      <td>6.11</td>
+      <td>4.98</td>
+      <td>1.80</td>
+      <td>3.10</td>
+      <td>3.02</td>
+    </tr>
+    <tr>
+      <td>19:15</td>
+      <td>785.37</td>
+      <td>5.92</td>
+      <td>4.65</td>
+      <td>1.75</td>
+      <td>2.61</td>
+      <td>3.31</td>
+    </tr>
+    <tr>
+      <td>19:30</td>
+      <td>759.66</td>
+      <td>6.40</td>
+      <td>4.86</td>
+      <td>1.52</td>
+      <td>3.10</td>
+      <td>3.31</td>
+    </tr>
+    <tr>
+      <td>19:45</td>
+      <td>716.32</td>
+      <td>6.40</td>
+      <td>4.58</td>
+      <td>1.30</td>
+      <td>3.10</td>
+      <td>3.31</td>
+    </tr>
+    <tr>
+      <td>20:00</td>
+      <td>681.47</td>
+      <td>6.52</td>
+      <td>4.44</td>
+      <td>1.17</td>
+      <td>3.30</td>
+      <td>3.22</td>
+    </tr>
+    <tr>
+      <td>20:15</td>
+      <td>658.88</td>
+      <td>6.52</td>
+      <td>4.30</td>
+      <td>1.08</td>
+      <td>3.30</td>
+      <td>3.22</td>
+    </tr>
+    <tr>
+      <td>20:30</td>
+      <td>641.53</td>
+      <td>6.46</td>
+      <td>4.14</td>
+      <td>1.03</td>
+      <td>2.88</td>
+      <td>3.57</td>
+    </tr>
+    <tr>
+      <td>20:45</td>
+      <td>631.87</td>
+      <td>6.46</td>
+      <td>4.08</td>
+      <td>1.03</td>
+      <td>2.88</td>
+      <td>3.57</td>
+    </tr>
+    <tr>
+      <td>21:00</td>
+      <td>604.22</td>
+      <td>6.33</td>
+      <td>3.82</td>
+      <td>1.00</td>
+      <td>2.76</td>
+      <td>3.57</td>
+    </tr>
+    <tr>
+      <td>21:15</td>
+      <td>591.89</td>
+      <td>6.58</td>
+      <td>3.89</td>
+      <td>1.06</td>
+      <td>3.20</td>
+      <td>3.38</td>
+    </tr>
+    <tr>
+      <td>21:30</td>
+      <td>570.25</td>
+      <td>6.54</td>
+      <td>3.73</td>
+      <td>1.06</td>
+      <td>3.25</td>
+      <td>3.28</td>
+    </tr>
+    <tr>
+      <td>21:45</td>
+      <td>548.65</td>
+      <td>6.54</td>
+      <td>3.59</td>
+      <td>1.14</td>
+      <td>3.25</td>
+      <td>3.28</td>
+    </tr>
+    <tr>
+      <td>22:00</td>
+      <td>563.58</td>
+      <td>6.54</td>
+      <td>3.69</td>
+      <td>1.22</td>
+      <td>3.25</td>
+      <td>3.28</td>
+    </tr>
+    <tr>
+      <td>22:15</td>
+      <td>544.36</td>
+      <td>6.61</td>
+      <td>3.60</td>
+      <td>1.30</td>
+      <td>3.33</td>
+      <td>3.27</td>
+    </tr>
+    <tr>
+      <td>22:30</td>
+      <td>529.91</td>
+      <td>6.31</td>
+      <td>3.34</td>
+      <td>1.43</td>
+      <td>3.19</td>
+      <td>3.13</td>
+    </tr>
+    <tr>
+      <td>22:45</td>
+      <td>519.24</td>
+      <td>6.31</td>
+      <td>3.28</td>
+      <td>1.62</td>
+      <td>3.19</td>
+      <td>3.13</td>
+    </tr>
+    <tr>
+      <td>23:00</td>
+      <td>515.08</td>
+      <td>6.31</td>
+      <td>3.25</td>
+      <td>1.68</td>
+      <td>3.19</td>
+      <td>3.13</td>
+    </tr>
+    <tr>
+      <td>23:15</td>
+      <td>496.68</td>
+      <td>6.31</td>
+      <td>3.13</td>
+      <td>1.75</td>
+      <td>3.19</td>
+      <td>3.13</td>
+    </tr>
+    <tr>
+      <td>23:30</td>
+      <td>493.57</td>
+      <td>5.49</td>
+      <td>2.71</td>
+      <td>1.81</td>
+      <td>2.77</td>
+      <td>2.71</td>
+    </tr>
+    <tr>
+      <td>23:45</td>
+      <td>479.73</td>
+      <td>5.53</td>
+      <td>2.65</td>
+      <td>1.90</td>
+      <td>2.77</td>
+      <td>2.76</td>
+    </tr>
+  </tbody>
+</table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+        <script>
+            const baseZysk = 242.0147492;
+            const turbinesData = {"T1": [3.190000057220459, 3.190000057220459, 3.190000057220459, 2.7699999809265137, 3.0, 3.109999895095825, 2.8399999141693115, 2.990000009536743, 2.9000000953674316, 2.8299999237060547, 3.3399999141693115, 3.3399999141693115, 3.3399999141693115, 3.3399999141693115, 3.3399999141693115, 3.3399999141693115, 3.3399999141693115, 3.3399999141693115, 3.3399999141693115, 3.3399999141693115, 3.609999895095825, 3.0399999618530273, 2.9800000190734863, 2.9800000190734863, 2.9800000190734863, 2.9800000190734863, 2.9000000953674316, 2.9000000953674316, 2.9000000953674316, 2.9000000953674316, 2.9000000953674316, 2.9000000953674316, 2.569999933242798, 2.609999895095825, 2.880000114440918, 2.9100000858306885, 2.890000104904175, 2.3299999237060547, 2.759999990463257, 2.0, 2.0199999809265137, 2.4600000381469727, 2.8499999046325684, 3.2699999809265137, 3.2799999713897705, 3.200000047683716, 2.7899999618530273, 2.7899999618530273, 2.740000009536743, 3.25, 2.5899999141693115, 2.509999990463257, 2.619999885559082, 1.8700000047683716, 2.049999952316284, 1.8899999856948853, 2.049999952316284, 3.630000114440918, 3.450000047683716, 3.609999895095825, 10.470000267028809, 10.880000114440918, 5.400000095367432, 3.319999933242798, 2.930000066757202, 2.7899999618530273, 2.7799999713897705, 2.740000009536743, 2.75, 2.740000009536743, 2.680000066757202, 2.680000066757202, 2.680000066757202, 2.6500000953674316, 1.2799999713897705, 1.3799999952316284, 3.0999999046325684, 2.609999895095825, 3.0999999046325684, 3.0999999046325684, 3.299999952316284, 3.299999952316284, 2.880000114440918, 2.880000114440918, 2.759999990463257, 3.200000047683716, 3.25, 3.25, 3.25, 3.3299999237060547, 3.190000057220459, 3.190000057220459, 3.190000057220459, 3.190000057220459, 2.7699999809265137, 2.7699999809265137], "T2": [3.130000114440918, 3.130000114440918, 3.130000114440918, 2.7100000381469727, 2.940000057220459, 3.049999952316284, 3.049999952316284, 2.990000009536743, 2.9000000953674316, 2.8299999237060547, 3.3399999141693115, 3.3399999141693115, 3.3399999141693115, 3.3399999141693115, 3.3399999141693115, 3.3399999141693115, 3.3399999141693115, 3.3399999141693115, 3.3399999141693115, 3.3399999141693115, 3.609999895095825, 3.0399999618530273, 2.9800000190734863, 2.9800000190734863, 2.9800000190734863, 2.9800000190734863, 2.9000000953674316, 2.9000000953674316, 2.9000000953674316, 2.9000000953674316, 2.9000000953674316, 2.9000000953674316, 2.569999933242798, 2.609999895095825, 2.880000114440918, 2.9100000858306885, 2.890000104904175, 2.319999933242798, 2.7899999618530273, 2.319999933242798, 2.3399999141693115, 3.1500000953674316, 3.6500000953674316, 3.299999952316284, 3.2200000286102295, 3.140000104904175, 2.7300000190734863, 2.7699999809265137, 2.740000009536743, 3.25, 2.5899999141693115, 2.509999990463257, 2.619999885559082, 1.8700000047683716, 2.049999952316284, 1.8899999856948853, 2.049999952316284, 3.630000114440918, 3.440000057220459, 3.5899999141693115, 10.460000038146973, 10.949999809265137, 5.46999979019165, 3.390000104904175, 3.380000114440918, 2.6700000762939453, 2.6600000858306885, 2.609999895095825, 2.630000114440918, 2.619999885559082, 2.559999942779541, 2.559999942779541, 2.559999942779541, 2.5299999713897705, 1.3899999856948853, 1.5, 3.0199999809265137, 3.309999942779541, 3.309999942779541, 3.309999942779541, 3.2200000286102295, 3.2200000286102295, 3.569999933242798, 3.569999933242798, 3.569999933242798, 3.380000114440918, 3.2799999713897705, 3.2799999713897705, 3.2799999713897705, 3.2699999809265137, 3.130000114440918, 3.130000114440918, 3.130000114440918, 3.130000114440918, 2.7100000381469727, 2.759999990463257]};
+            const times = ["00:00", "00:15", "00:30", "00:45", "01:00", "01:15", "01:30", "01:45", "02:00", "02:15", "02:30", "02:45", "03:00", "03:15", "03:30", "03:45", "04:00", "04:15", "04:30", "04:45", "05:00", "05:15", "05:30", "05:45", "06:00", "06:15", "06:30", "06:45", "07:00", "07:15", "07:30", "07:45", "08:00", "08:15", "08:30", "08:45", "09:00", "09:15", "09:30", "09:45", "10:00", "10:15", "10:30", "10:45", "11:00", "11:15", "11:30", "11:45", "12:00", "12:15", "12:30", "12:45", "13:00", "13:15", "13:30", "13:45", "14:00", "14:15", "14:30", "14:45", "15:00", "15:15", "15:30", "15:45", "16:00", "16:15", "16:30", "16:45", "17:00", "17:15", "17:30", "17:45", "18:00", "18:15", "18:30", "18:45", "19:00", "19:15", "19:30", "19:45", "20:00", "20:15", "20:30", "20:45", "21:00", "21:15", "21:30", "21:45", "22:00", "22:15", "22:30", "22:45", "23:00", "23:15", "23:30", "23:45"];
+            const rce = [445.77, 433.15, 433.27, 431.89, 431.64, 426.9, 423.48, 423.66, 424.71, 424.66, 424.61, 424.51, 428.77, 427.35, 429.04, 429.26, 430.49, 433.27, 434.24, 435.16, 467.33, 471.54, 491.85, 518.44, 579.56, 610.77, 621.27, 625.7, 619.38, 618.65, 590.18, 531.53, 508.77, 452.61, 409.56, 376.46, 333.58, 262.5, 210.25, 101.47, -3.59, -13.65, -85.35, -88.86, -21.04, -33.52, -38.93, -40.66, -37.29, -43.59, -35.57, -14.38, -18.06, -11.5, -7.09, -0.39, 5.27, 11.92, 16.35, 38.35, 256.98, 320.76, 402.59, 458.33, 459.67, 481.37, 549.83, 587.97, 581.83, 655.9, 704.67, 755.18, 784.44, 810.83, 827.54, 829.18, 815.14, 785.37, 759.66, 716.32, 681.47, 658.88, 641.53, 631.87, 604.22, 591.89, 570.25, 548.65, 563.58, 544.36, 529.91, 519.24, 515.08, 496.68, 493.57, 479.73];
+            
+            const fmt = (num) => num.toLocaleString('pl-PL', {maximumFractionDigits: 0});
+            
+            let baseSumaArray = new Array(times.length).fill(0);
+            for(let t in turbinesData) {
+                for(let i=0; i<times.length; i++) {
+                    baseSumaArray[i] += turbinesData[t][i];
+                }
+            }
+
+            function timeToMins(t) {
+                if(!t) return null;
+                let parts = t.split(':');
+                return parseInt(parts[0])*60 + parseInt(parts[1]);
+            }
+
+            function updateSimulation() {
+                let newSuma = new Array(times.length).fill(0);
+                for(let t in turbinesData) {
+                    let out24 = document.getElementById('out_' + t).checked;
+                    let startMins = timeToMins(document.getElementById('start_' + t).value);
+                    let endMins = timeToMins(document.getElementById('end_' + t).value);
+                    let data = turbinesData[t];
+                    
+                    for(let i=0; i<times.length; i++) {
+                        if(out24) continue; 
+                        let curMins = timeToMins(times[i]);
+                        let isCut = false;
+                        if(startMins !== null && endMins !== null && !isNaN(startMins) && !isNaN(endMins)) {
+                            if(startMins < endMins) {
+                                if(curMins >= startMins && curMins < endMins) isCut = true;
+                            } else if(startMins > endMins) {
+                                if(curMins >= startMins || curMins < endMins) isCut = true;
+                            }
+                        }
+                        if(!isCut) newSuma[i] += data[i];
+                    }
+                }
+                
+                let totalNetto = 0; let totalZysk = 0; let totalUratowany = 0; let peakPower = 0;
+                let hourlyAgg = {};
+                
+                for(let i=0; i<times.length; i++) {
+                    let val = newSuma[i];
+                    let price = rce[i];
+                    let zysk = (val / 1000) * price; 
+                    totalNetto += val;
+                    if(val > peakPower) peakPower = val;
+                    totalZysk += zysk;
+                    if(price < 0) totalUratowany += Math.abs(zysk);
+                    
+                    let hourKey = times[i].split(':')[0] + ":00";
+                    if(!hourlyAgg[hourKey]) {
+                        hourlyAgg[hourKey] = { base: 0, new: 0, lossKwh: 0, lossPln: 0, prices: [] };
+                    }
+                    hourlyAgg[hourKey].base += baseSumaArray[i];
+                    hourlyAgg[hourKey].new += val;
+                    hourlyAgg[hourKey].prices.push(price);
+                    
+                    let diffKwh = baseSumaArray[i] - val;
+                    if(diffKwh > 0 && price > 0) {
+                        hourlyAgg[hourKey].lossKwh += diffKwh;
+                        hourlyAgg[hourKey].lossPln += (diffKwh / 1000) * price;
+                    }
+                }
+                
+                let strata = baseZysk - totalZysk;
+                if(strata < 0) strata = 0; 
+                
+                document.getElementById('kpi-netto').innerText = (totalNetto / 1000).toFixed(2);
+                document.getElementById('kpi-zysk').innerText = fmt(totalZysk);
+                document.getElementById('kpi-strata').innerText = fmt(strata);
+                document.getElementById('kpi-uratowany').innerText = fmt(totalUratowany);
+                document.getElementById('kpi-peak').innerText = fmt(peakPower);
+                
+                if (typeof Plotly !== 'undefined') {
+                    let yUpper = newSuma.map(v => v * 1.15);
+                    let yLower = newSuma.map(v => v * 0.85);
+                    var update = { y: [yUpper, yLower, newSuma] };
+                    Plotly.restyle('scada-plot', update, [0, 1, 2]);
+                }
+                
+                let tbodyHtml = "";
+                for(let h in hourlyAgg) {
+                    let row = hourlyAgg[h];
+                    let avgPrice = row.prices.reduce((a,b)=>a+b, 0) / row.prices.length;
+                    let priceColor = avgPrice < 0 ? '#da291c' : '#d1d1d1';
+                    let newProdColor = row.new < row.base ? '#ff9100' : '#d1d1d1';
+                    let lossColor = row.lossPln > 0 ? '#ff4d4d' : '#444';
+                    
+                    tbodyHtml += `
+                        <tr>
+                            <td class="text-start" style="font-weight: bold;">${h}</td>
+                            <td style="color: ${priceColor};">${avgPrice.toFixed(2)}</td>
+                            <td>${row.base.toFixed(2)}</td>
+                            <td style="color: ${newProdColor}; font-weight: ${row.new < row.base ? 'bold' : 'normal'};">${row.new.toFixed(2)}</td>
+                            <td style="color: ${lossColor};">-${row.lossKwh.toFixed(2)}</td>
+                            <td style="color: ${lossColor}; font-weight: bold;">-${row.lossPln.toFixed(2)}</td>
+                        </tr>
+                    `;
+                }
+                document.getElementById('dynamic-table-body').innerHTML = tbodyHtml;
+            }
+
+            document.querySelectorAll('.out-all-day, .time-input').forEach(el => {
+                el.addEventListener('input', updateSimulation);
+            });
+            window.addEventListener('load', updateSimulation);
+        </script>
+    </body>
+    </html>
+    
